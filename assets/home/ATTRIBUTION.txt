@@ -1,0 +1,3 @@
+Remix Icon 4.6.0 — https://remixicon.com/ — Apache License 2.0
+Noto Serif SC — https://fonts.google.com/noto/specimen/Noto+Serif+SC — SIL Open Font License 1.1
+Book hero and footer: AI-generated concept artwork based on the selected design.

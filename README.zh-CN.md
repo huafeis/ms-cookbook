@@ -19,6 +19,7 @@
 
 <p align="center">
   <a href="#快速开始">快速开始</a> ·
+  <a href="https://modelscope.cn/studios/canghe/ms-cookbook">在线阅读</a> ·
   <a href="#内容目录">探索全书</a> ·
   <a href="#参与贡献">参与贡献</a> ·
   <a href="https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1">阅读飞书原稿</a>
@@ -97,6 +98,12 @@ python3 -m http.server 4173 --bind 127.0.0.1
 ### 阅读体验
 
 网站提供全文关键词搜索、阅读路径、章节导航、代码复制、图片放大与 KaTeX 公式渲染，适配桌面和移动端。章节图片、附件与渲染资源随仓库提供，便于下载后在本地阅读。
+
+## 自动发布
+
+网站部署于[公开的魔搭创空间](https://modelscope.cn/studios/canghe/ms-cookbook)。`main` 分支中的站点文件更新后，GitHub Actions 的 **Deploy to ModelScope Studio** 工作流会自动运行；维护者也可在 Actions 页面手动触发。
+
+工作流将已提交的站点文件同步至创空间的 `master` 分支，生成中文创空间卡片并触发部署，核对线上页面与源码提交后才会完成。发布凭据保存在仓库的 `MODELSCOPE_API_KEY` Secret 中。代码与内容统一在 GitHub 维护。
 
 ## 仓库结构
 

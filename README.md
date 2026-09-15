@@ -35,8 +35,6 @@ A useful model application starts with practical decisions: which model fits the
 The goal is to help developers move from a first successful inference to applications they can reproduce, evaluate, and improve. Examples cover enterprise knowledge Q&A, speech assistants, customer-service quality analysis, fitness coaching, and product-image creation.
 
 > **8 parts · 31 chapters · 30 available to read**
->
-> The book and reading website are in **Simplified Chinese**. This English README introduces the project and explains how to use and contribute to it.
 
 ## Start reading
 

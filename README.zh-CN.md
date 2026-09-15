@@ -22,7 +22,7 @@
   <a href="https://modelscope.cn/studios/canghe/ms-cookbook">在线阅读</a> ·
   <a href="#内容目录">探索全书</a> ·
   <a href="#参与贡献">参与贡献</a> ·
-  <a href="https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1">阅读飞书原稿</a>
+  <a href="content/">查看章节源文件</a>
 </p>
 
 ## 这是什么项目？
@@ -46,7 +46,8 @@
 | --- | --- |
 | 跑通第一个开源模型 | **从零开始：** 基础认知 → 任务选型 → 第一次推理 |
 | 让模型适应自己的场景 | **深入模型：** 训练数据 → 微调 → 评测 |
-| 开发一个 AI 应用 | **走向应用：** 知识问答 → AIGC → Agent 与工具 |
+| 开发一个 AI 应用 | **走向应用：** 知识问答 → 外部工具 → 可复用 Skill |
+| 用生成式模型开展创作 | **AIGC 创作：** 案例 → 图像 LoRA → 商品营销图 → 理论基础 |
 
 书籍正文与网站界面目前采用**简体中文**。本仓库提供阅读网站、章节正文与配套媒体资源，英文 README 提供项目概览与运行说明。
 
@@ -72,7 +73,7 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 如果 `4173` 端口已被占用，请将命令与浏览器地址中的端口一并改为 `4174`。保持 `index.html` 与 `assets/` 目录的相对位置，并以仓库根目录作为 HTTP 服务目录。
 
-下载完成后，仓库内的阅读内容可在本地访问。飞书原稿及其他外部资源链接需要联网，部分资源可能需要访问权限。
+下载完成后，仓库内的阅读内容可在本地访问。GitHub 与其他外部资源链接需要联网，部分资源可能需要访问权限。
 
 ## 内容目录
 
@@ -91,9 +92,9 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 ### 内容状态
 
-当前内容快照日期为 **2026 年 9 月 14 日**，共 **31 章，其中 30 章可读**。第 23 章《开源模型也能做出像样的AI短剧吗？》保留占位说明，正文待补充。
+当前内容快照日期为 **2026 年 9 月 15 日**，共 **31 章，其中 30 章可读**。第 23 章《开源模型也能做出像样的AI视频吗？》保留原稿中 MiniMax H3 部署教程即将更新的说明。
 
-快照包含 347 处正文图片引用与 12 个附件链接。内容随仓库保存，后续修改不会自动从[飞书原稿](https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1)同步。
+快照包含 347 处正文图片引用、12 个附件链接及 12 个嵌入表格的实际内容。[章节源文件](content/)随仓库保存，后续更新需经过明确核对，网站不会自动拉取创作工作区的改动。[同步校验记录](content/sync-report.json)包含原稿版本号、正文、标题顺序、代码与公式的校验结果。
 
 ### 阅读体验
 
@@ -116,17 +117,25 @@ python3 -m http.server 4173 --bind 127.0.0.1
 │   ├── paper.js                # 导航、搜索与阅读交互
 │   ├── styles.css              # 基础样式
 │   ├── paper.css               # 网站主题与布局
+│   ├── review.css              # 局部界面与移动端修复
+│   ├── dada/                   # 搭搭素材、许可证与来源声明
+│   ├── community/              # 社区二维码
+│   ├── review/                 # 移除纸飞机后的背景图
 │   ├── paper/                  # 插画、图标与素材来源说明
 │   ├── home/                   # 共用视觉资源与字体许可
 │   ├── manuscript-20260914/     # 正文图片与附件
 │   └── katex/                  # 本地数学公式渲染器与字体
+├── content/                    # 可审阅的章节源文件与同步证据
+├── scripts/build-content.py    # 生成章节数据
+├── scripts/check-site.mjs       # 正文资源与本地链接检查
+├── CONTRIBUTING.md             # 贡献指南
 ├── README.md                   # 英文说明
 ├── README.zh-CN.md             # 简体中文说明
 ├── 使用说明.txt                 # 本地版本说明
 └── LICENSE                     # Apache License 2.0
 ```
 
-网站使用 HTML、CSS 与浏览器端 JavaScript。`index.html` 通过 `assets/content.js` 加载章节数据，通过 `assets/paper.js` 提供阅读交互。页面使用 URL 片段导航，例如 `#home`、`#contents` 与 `#chapter-1`。
+网站使用 HTML、CSS 与浏览器端 JavaScript。`index.html` 通过 `assets/content.js` 加载章节数据，通过 `assets/paper.js` 提供阅读交互。页面使用 URL 片段导航，例如 `#home`、`#contents`、`#paths/aigc`、`#contribute` 与 `#chapter-1`。修改章节源文件后，运行 `python3 scripts/build-content.py` 和 `node scripts/check-site.mjs`；直接阅读现有站点无需构建。
 
 ## 参与贡献
 
@@ -140,6 +149,8 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 请保留所贡献材料的来源说明，并确认拥有相应的分享权限。示例与附件中请勿包含访问凭据或个人隐私数据。
 
+详细流程见[贡献指南](CONTRIBUTING.md)。也可前往[魔搭开发者实践](https://modelscope.cn/spotlight)，选择「创建内容」，添加专题 **#魔搭紫皮书** 后投稿。网站的「社区共建」页提供交流群二维码和已核实的代码贡献者入口，内容作者及审校名单将在确认署名后补充。
+
 ## 许可证与致谢
 
 本仓库采用 [Apache License 2.0](LICENSE)。随仓库提供的第三方组件保留各自的许可证：
@@ -147,5 +158,6 @@ python3 -m http.server 4173 --bind 127.0.0.1
 - [KaTeX](assets/katex/LICENSE)：MIT License。
 - [Remix Icon](assets/home/REMIX-LICENSE)：Apache License 2.0。
 - [Noto Serif SC](assets/home/NOTO-LICENSE.txt)：SIL Open Font License 1.1。
+- [搭搭插画](https://github.com/NovaWang97/dada-illustrations)：[MIT License](assets/dada/LICENSE)，保留[上游声明](assets/dada/NOTICE.md)。参见[本次素材说明](assets/review/ATTRIBUTION.md)。
 
 正文图片与附件的权利归原作者或相应权利人所有。素材来源详见[网站素材说明](assets/paper/ATTRIBUTION.txt)与[共用素材说明](assets/home/ATTRIBUTION.txt)。书中涉及的模型、数据集与工具，适用各自的许可证及使用条款。

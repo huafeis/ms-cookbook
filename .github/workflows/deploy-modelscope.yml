@@ -7,6 +7,10 @@ on:
       - 'index.html'
       - 'favicon.svg'
       - 'assets/**'
+      - 'content/**'
+      - 'CONTRIBUTING.md'
+      - 'scripts/build-content.py'
+      - 'scripts/check-site.mjs'
       - 'README*.md'
       - 'LICENSE'
       - 'scripts/deploy-modelscope.mjs'
@@ -34,6 +38,11 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      - name: Verify chapter data and local resources
+        run: |
+          python3 scripts/build-content.py
+          git diff --exit-code -- assets/content.js
+          node scripts/check-site.mjs
       - name: Sync and deploy the website
         env:
           MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}

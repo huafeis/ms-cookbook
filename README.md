@@ -22,7 +22,7 @@
   <a href="https://modelscope.cn/studios/canghe/ms-cookbook">Read online</a> ·
   <a href="#contents">Explore the book</a> ·
   <a href="#contributing">Contribute</a> ·
-  <a href="https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1">Read the source manuscript</a>
+  <a href="content/">Browse chapter sources</a>
 </p>
 
 ## What is ModelScope Cookbook?
@@ -46,7 +46,8 @@ The aim is to help readers build the skills to **choose an appropriate model, ge
 | --- | --- |
 | Run your first open-source model | **Start with the basics:** model fundamentals → task selection → first inference |
 | Adapt a model to your use case | **Develop model expertise:** training data → fine-tuning → evaluation |
-| Build an AI application | **Explore applications:** knowledge assistants → generative AI → agents and tools |
+| Build an AI application | **Explore applications:** knowledge assistants → external tools → reusable skills |
+| Create with generative AI | **AIGC creation:** examples → image LoRA → product visuals → theory |
 
 The book and website are currently in **Simplified Chinese**. This repository includes the reading website, chapter content, and supporting media; the English README provides an overview and setup instructions.
 
@@ -72,7 +73,7 @@ Open [http://127.0.0.1:4173/#home](http://127.0.0.1:4173/#home). Stop the server
 
 If port `4173` is in use, replace it with `4174` in both the command and the browser address. Keep `index.html` and the `assets/` directory together, and serve the repository root over HTTP.
 
-Once downloaded, the bundled reading content is available locally. Links to the source manuscript and other external resources require an internet connection and may require access permissions.
+Once downloaded, the bundled reading content is available locally. GitHub and other external resources require an internet connection and may require access permissions.
 
 ## Contents
 
@@ -91,9 +92,9 @@ Use the website's table of contents to browse the book, its reading paths to fol
 
 ### Content status
 
-The current snapshot is dated **September 14, 2026** and includes **31 chapters, with 30 available to read**. Chapter 23, on AI-generated short dramas, is a placeholder pending additional content.
+The current snapshot is dated **September 15, 2026** and includes **31 chapters, with 30 available to read**. Chapter 23, on AI-generated video, retains the source manuscript's notice about an upcoming MiniMax H3 deployment tutorial.
 
-The snapshot includes 347 chapter-image references and 12 attachment links. Content is bundled in this repository and does not automatically synchronize with the [source manuscript on Feishu](https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1).
+The snapshot includes 347 chapter-image references, 12 attachment links, and the contents of 12 embedded spreadsheets. [Chapter sources](content/) are bundled in this repository. Updates are reviewed explicitly; the website does not automatically pull from the authoring workspace. [Sync evidence](content/sync-report.json) records source revisions and checks of prose, heading order, code, and formulas.
 
 ### Reading experience
 
@@ -116,17 +117,25 @@ The workflow synchronizes committed website files to the Studio's `master` branc
 │   ├── paper.js                # Navigation, search, and reading interactions
 │   ├── styles.css              # Base styles
 │   ├── paper.css               # Site theme and layout
+│   ├── review.css              # Focused UI and mobile refinements
+│   ├── dada/                   # Dada artwork, license, and notice
+│   ├── community/              # Community QR code
+│   ├── review/                 # Backgrounds with paper airplanes removed
 │   ├── paper/                  # Illustrations, icons, and attribution
 │   ├── home/                   # Shared visual assets and font licenses
 │   ├── manuscript-20260914/     # Chapter images and attachments
 │   └── katex/                  # Bundled math renderer and fonts
+├── content/                    # Reviewable chapter sources and sync evidence
+├── scripts/build-content.py    # Rebuild bundled chapter data
+├── scripts/check-site.mjs       # Content and local-link checks
+├── CONTRIBUTING.md             # Contribution guide
 ├── README.md                   # English documentation
 ├── README.zh-CN.md             # Simplified Chinese documentation
 ├── 使用说明.txt                 # Local edition notes
 └── LICENSE                     # Apache License 2.0
 ```
 
-The site uses HTML, CSS, and browser-side JavaScript. `index.html` loads the chapter data from `assets/content.js` and the reading interface from `assets/paper.js`. Navigation uses URL fragments, such as `#home`, `#contents`, and `#chapter-1`.
+The site uses HTML, CSS, and browser-side JavaScript. `index.html` loads the chapter data from `assets/content.js` and the reading interface from `assets/paper.js`. Navigation uses URL fragments, such as `#home`, `#contents`, `#paths/aigc`, `#contribute`, and `#chapter-1`. After editing chapter sources, run `python3 scripts/build-content.py` and `node scripts/check-site.mjs`; reading the existing website requires no build.
 
 ## Contributing
 
@@ -140,6 +149,8 @@ Contributions are welcome through [GitHub Issues](https://github.com/modelscope/
 
 Preserve attribution for contributed material and include only content you are authorized to share. Keep credentials and personal data out of examples and attachments.
 
+See the [contribution guide](CONTRIBUTING.md). You can also share a practice through [ModelScope Developer Practices](https://modelscope.cn/spotlight): select **创建内容** and add **#魔搭紫皮书**. The website's **社区共建** page includes the community QR code and verified contributor links. Author and reviewer credits are added after confirmation.
+
 ## License and acknowledgments
 
 This repository is distributed under the [Apache License 2.0](LICENSE). Bundled third-party components retain their respective licenses:
@@ -147,5 +158,6 @@ This repository is distributed under the [Apache License 2.0](LICENSE). Bundled 
 - [KaTeX](assets/katex/LICENSE): MIT License.
 - [Remix Icon](assets/home/REMIX-LICENSE): Apache License 2.0.
 - [Noto Serif SC](assets/home/NOTO-LICENSE.txt): SIL Open Font License 1.1.
+- [Dada illustrations](https://github.com/NovaWang97/dada-illustrations): [MIT License](assets/dada/LICENSE), with the [upstream notice](assets/dada/NOTICE.md) retained. See [artwork notes](assets/review/ATTRIBUTION.md).
 
 Chapter images and attachments remain subject to the rights of their authors or respective rights holders. See the [site asset attribution](assets/paper/ATTRIBUTION.txt) and [shared asset attribution](assets/home/ATTRIBUTION.txt) for provenance. Models, datasets, and tools referenced in the book are subject to their own licenses and terms.

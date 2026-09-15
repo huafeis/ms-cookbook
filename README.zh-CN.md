@@ -1,67 +1,50 @@
-<h1 align="center">ModelScope Cookbook · 魔搭紫皮书</h1>
+<p align="right"><a href="README.md">English</a> · 简体中文</p>
 
+<p align="center">
+  <img src="assets/home/book-hero.webp" width="360" alt="魔搭紫皮书：开源模型应用实战封面">
+</p>
+
+<h1 align="center">ModelScope Cookbook · 魔搭紫皮书</h1>
 <p align="center"><strong>让开源模型，从知识走向实践。</strong></p>
 <p align="center">选得对 · 跑得起 · 调得好 · 用得上</p>
 
 <p align="center">
-  <img src="assets/home/book-hero.webp" width="320" alt="魔搭紫皮书：开源模型实践概念封面">
+  <a href="https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook"><img src="https://img.shields.io/badge/在线阅读-ModelScope-7043DB?style=flat-square" alt="在魔搭创空间在线阅读"></a>
+  <a href="https://github.com/modelscope/ms-cookbook/stargazers"><img src="https://img.shields.io/github/stars/modelscope/ms-cookbook?style=flat-square&amp;color=7043DB" alt="GitHub stars"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-7043DB?style=flat-square" alt="许可证：Apache 2.0"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/参与共建-Welcome-287D70?style=flat-square" alt="欢迎参与共建"></a>
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> · 简体中文
+  <a href="#项目介绍">项目介绍</a> ·
+  <a href="#开始阅读">开始阅读</a> ·
+  <a href="#学习路线">学习路线</a> ·
+  <a href="#内容导航">内容导航</a> ·
+  <a href="#读者社区">读者社区</a> ·
+  <a href="#参与共建">参与共建</a>
 </p>
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-5B4BDB.svg" alt="许可证：Apache 2.0"></a>
-  <a href="#内容目录"><img src="https://img.shields.io/badge/Content-Simplified_Chinese-5B4BDB.svg" alt="正文语言：简体中文"></a>
-  <a href="https://github.com/modelscope/ms-cookbook/pulls"><img src="https://img.shields.io/badge/Contributions-Welcome-287D70.svg" alt="欢迎参与贡献"></a>
-</p>
+---
 
-<p align="center">
-  <a href="#快速开始">快速开始</a> ·
-  <a href="https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook">在线阅读</a> ·
-  <a href="#内容目录">探索全书</a> ·
-  <a href="#参与贡献">参与贡献</a> ·
-  <a href="content/">查看章节源文件</a>
-</p>
+## 项目介绍
 
-## 这是什么项目？
+**魔搭紫皮书是一个面向开发者的开源模型应用实战项目，围绕真实任务，系统介绍模型选型、推理运行、数据准备、微调评测与应用开发。**
 
-**魔搭紫皮书是一个面向开发者的开源模型应用实战项目，帮助读者把开源 AI 模型用到具体任务中。** 项目通过操作教程与场景案例，将模型选型、推理运行、数据准备、微调评测与应用开发串成一条完整的学习路径。
+从“模型可以下载”到“模型真正用起来”，中间还有一系列具体问题：业务需求该选哪类模型？现有硬件能跑多大规模？如何用自己的数据微调？效果提升该怎样验证？本书结合 **EvalScope、ms-swift、DiffSynth、Ollama** 等工具，以及 RAG 与 Agent 工作流，把这些选择与动手操作衔接起来。
 
-面对一个业务需求，该选什么模型？手里的硬件能不能跑？如何让模型适应自己的数据，又怎样判断效果有没有提升？本书围绕这些实际问题，结合魔搭生态中的 **EvalScope、ms-swift、DiffSynth**，以及本地推理工具与智能体框架，逐步讲解实现方法与选择依据。
+项目希望帮助读者建立**从任务定义到效果验证的实践能力**：先跑通一个结果，再理解运行条件与方法边界，逐步构建能够复现、评测和改进的应用。书中案例覆盖企业知识问答、语音助手、客服质检、AI 健身教练和商品营销图等场景。
 
-项目希望帮助读者建立**选模型、跑模型、验证效果、构建应用**的实践能力。你可以从第一个推理示例开始，也可以直接探索企业知识问答、语音助手、客服质检、图像生成及工具调用等应用场景。
+> **8 篇主题 · 31 个章节 · 30 章可读**
+>
+> 正文与阅读网站使用**简体中文**，英文 README 提供项目介绍与使用指南。
 
-## 你能从中获得什么？
+## 开始阅读
 
-- **🧭 选得对：把需求转化为模型任务。** 明确输入、输出与评估标准，结合具体问题比较模型，建立有依据的选型方法。
-- **🛠️ 跑得起：用现有资源开始实践。** 从模型下载、环境准备，到本地与云端推理、模型量化，理解运行条件与资源需求。
-- **📊 调得好：让优化有数据、有验证。** 学习训练数据准备、轻量微调与偏好对齐，通过基线对比和评测检验效果。
-- **🚀 用得上：将模型能力接入应用。** 跟随 RAG、语音和生成式 AI 案例开展实践，再通过 MCP 与 Skill 探索工具连接和可复用工作流。
+**[在魔搭创空间在线阅读 →](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook)**
 
-### 找到你的阅读起点
+打开即可阅读，无需安装。网站提供全文关键词搜索、阅读路径、章节导航、代码复制、图片放大与数学公式渲染，支持桌面和手机访问。
 
-| 你的目标 | 推荐阅读路径 |
-| --- | --- |
-| 跑通第一个开源模型 | **从零开始：** 基础认知 → 任务选型 → 第一次推理 |
-| 让模型适应自己的场景 | **深入模型：** 训练数据 → 微调 → 评测 |
-| 开发一个 AI 应用 | **走向应用：** 知识问答 → 外部工具 → 可复用 Skill |
-| 用生成式模型开展创作 | **AIGC 创作：** 案例 → 图像 LoRA → 商品营销图 → 理论基础 |
-
-书籍正文与网站界面目前采用**简体中文**。本仓库提供阅读网站、章节正文与配套媒体资源，英文 README 提供项目概览与运行说明。
-
-## 快速开始
-
-### 环境要求
-
-- Git，用于克隆仓库；也可从 GitHub 下载 ZIP 压缩包并解压。
-- Python 3，用于运行本地 HTTP 服务。
-- 现代浏览器。
-
-运行阅读网站无需安装项目依赖、执行构建、配置 API 密钥或使用 GPU。各章实践可能需要额外的软件、模型文件、访问凭据或硬件，具体要求以章节说明为准。
-
-### 本地运行
+如需本地阅读：
 
 ```bash
 git clone https://github.com/modelscope/ms-cookbook.git
@@ -69,95 +52,161 @@ cd ms-cookbook
 python3 -m http.server 4173 --bind 127.0.0.1
 ```
 
-打开 [http://127.0.0.1:4173/#home](http://127.0.0.1:4173/#home) 即可阅读。在终端按 `Ctrl+C` 停止服务。
+打开 [http://127.0.0.1:4173/#home](http://127.0.0.1:4173/#home)。端口被占用时，将命令和地址中的端口一并改为 `4174`。按 `Ctrl+C` 停止服务。
 
-如果 `4173` 端口已被占用，请将命令与浏览器地址中的端口一并改为 `4174`。保持 `index.html` 与 `assets/` 目录的相对位置，并以仓库根目录作为 HTTP 服务目录。
+本地阅读只需 Python 3 与现代浏览器，无需安装项目依赖、执行构建、配置 API 密钥或使用 GPU。各章实践所需的软件、模型文件、访问凭据和算力条件，以章节说明为准。
 
-下载完成后，仓库内的阅读内容可在本地访问。GitHub 与其他外部资源链接需要联网，部分资源可能需要访问权限。
+## 学习路线
 
-## 内容目录
-
-| 篇目 | 主题 | 章节 |
+| 你的目标 | 推荐章节 | 实践收获 |
 | --- | --- | --- |
-| 第一篇 | 认识开源模型 | 1–4 |
-| 第二篇 | 从问题出发：找到适合场景的开源模型 | 5–6 |
-| 第三篇 | 跑得起：让第一个开源模型工作起来 | 7–11 |
-| 第四篇 | 调得好：把通用模型变成场景模型 | 12–15 |
-| 第五篇 | 场景篇：从模型走向完整业务系统 | 16–19 |
-| 第六篇 | AIGC 特别篇 | 20–24 |
-| 第七篇 | Agent 特别篇 | 25–30 |
-| 第八篇 | 基础知识补充 | 31 |
+| **从零开始** | [01](content/chapters/chapter-01.html) → [05](content/chapters/chapter-05.html) → [07](content/chapters/chapter-07.html) | 理解模型、定义任务，完成第一次推理 |
+| **深入模型** | [12](content/chapters/chapter-12.html) → [13](content/chapters/chapter-13.html) → [15](content/chapters/chapter-15.html) | 准备训练数据、开展轻量微调，用评测检验效果 |
+| **走向应用** | [19](content/chapters/chapter-19.html) → [25](content/chapters/chapter-25.html) → [26](content/chapters/chapter-26.html) | 连接知识库、外部工具与可复用 Skill |
+| **AIGC 创作** | [20](content/chapters/chapter-20.html) → [21](content/chapters/chapter-21.html) → [22](content/chapters/chapter-22.html) → [24](content/chapters/chapter-24.html) | 从案例出发，学习图像 LoRA、商品图创作与理论基础 |
 
-可通过网站的全书目录系统阅读，沿阅读路径逐步学习，也可从场景实践入口直接进入感兴趣的任务。
+### 适合谁学？怎么学？
 
-### 内容状态
+- **开发者与在校学生：** 希望通过可操作的示例，建立开源模型应用的基础认知。
+- **应用工程师：** 正在处理模型选型、资源配置、数据微调与效果评测问题。
+- **AIGC 实践者：** 希望探索图像定制、生成与编辑工作流。
 
-当前内容快照日期为 **2026 年 9 月 15 日**，共 **31 章，其中 30 章可读**。第 23 章《开源模型也能做出像样的AI视频吗？》保留原稿中 MiniMax H3 部署教程即将更新的说明。
+代码实践建议具备基础 Python 与命令行知识。可以按路线循序学习，也可以从当前任务对应的案例入手：先检查环境要求，再复现示例，然后替换为自己的输入，记录结果与局限。
 
-快照包含 347 处正文图片引用、12 个附件链接及 12 个嵌入表格的实际内容。[章节源文件](content/)随仓库保存，后续更新需经过明确核对，网站不会自动拉取创作工作区的改动。[同步校验记录](content/sync-report.json)包含原稿版本号、正文、标题顺序、代码与公式的校验结果。
+## 内容导航
 
-### 阅读体验
+下方链接指向 GitHub 中可审阅的章节源文件。完整的正文、图片、代码与公式排版，请使用[在线阅读网站](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook)。章节名称与原稿保持一致。
 
-网站提供全文关键词搜索、阅读路径、章节导航、代码复制、图片放大与 KaTeX 公式渲染，适配桌面和移动端。章节图片、附件与渲染资源随仓库提供，便于下载后在本地阅读。
+| 章节与源文件 | 关键内容 | 状态 |
+| --- | --- | --- |
+| **第一篇　认识开源模型** | | |
+| [01 · 开源模型正在改变什么](content/chapters/chapter-01.html) | 开放程度、能力边界与许可证 | 可读 |
+| [02 · 开源模型还没用上，先卡在下载这一步？](content/chapters/chapter-02.html) | 模型库检索、模型卡与下载方式 | 可读 |
+| [03 · 数据，是你要做开源模型微调的基石](content/chapters/chapter-03.html) | 数据来源、质量与微调准备 | 可读 |
+| [04 · 没有资源也能玩开源模型，因为这里资源免费](content/chapters/chapter-04.html) | 模型与算力资源入口 | 可读 |
+| **第二篇　从问题出发：找到适合场景的开源模型** | | |
+| [05 · 要把业务问题转换成模型任务问题](content/chapters/chapter-05.html) | 任务定义、输入输出与评估标准 | 可读 |
+| [06 · 先评再选：用EvalScope形成开源模型的第一份报告](content/chapters/chapter-06.html) | 使用 EvalScope 建立选型基线 | 可读 |
+| **第三篇　跑得起：让第一个开源模型工作起来** | | |
+| [07 · 30分钟带你快速看到第一个结果](content/chapters/chapter-07.html) | 完成首次模型推理 | 可读 |
+| [08 · 多大模型，选择什么样的服务器配置](content/chapters/chapter-08.html) | 参数规模、显存与服务器选型 | 可读 |
+| [09 · 笔记本也能跑开源模型，先从Ollama开始](content/chapters/chapter-09.html) | 使用 Ollama 开展本地推理 | 可读 |
+| [10 · 把模型放到云端跑，用Notebook试试CPU和GPU](content/chapters/chapter-10.html) | 在云端 Notebook 中运行模型 | 可读 |
+| [11 · 模型需要资源太多，量化能帮上什么忙？](content/chapters/chapter-11.html) | 量化精度与资源开销 | 可读 |
+| **第四篇　调得好：把通用模型变成场景模型** | | |
+| [12 · 业务素材这么多，怎么变成能训练的数据？](content/chapters/chapter-12.html) | 从业务资料整理训练样本 | 可读 |
+| [13 · 快速用ms-swift，完成开源模型的轻量微调](content/chapters/chapter-13.html) | 使用 ms-swift 开展轻量微调 | 可读 |
+| [14 · 模型已经会回答了，为什么还要做偏好对齐？](content/chapters/chapter-14.html) | 理解偏好对齐的目标与方法 | 可读 |
+| [15 · 微调有没有用，测才知道？](content/chapters/chapter-15.html) | 对比微调前后的模型效果 | 可读 |
+| **第五篇　场景篇：从模型走向完整业务系统** | | |
+| [16 · AI健身教练：跟着视频练，让AI指出动作不标准的地方](content/chapters/chapter-16.html) | 人体关键点与动作对比 | 可读 |
+| [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.html) | 通话转写与服务质量分析 | 可读 |
+| [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.html) | 串联语音识别、问答与合成 | 可读 |
+| [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.html) | 知识库检索与 RAG 问答 | 可读 |
+| **第六篇　AIGC特別篇** | | |
+| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.html) | 开源生成模型的应用案例 | 可读 |
+| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.html) | 使用 DiffSynth 定制图像 LoRA | 可读 |
+| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.html) | 商品图生成与编辑 | 可读 |
+| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.html) | MiniMax H3 部署教程待更新 | 待更新 |
+| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.html) | 图像与视频生成基础 | 可读 |
+| **第七篇　Agent特别篇** | | |
+| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.html) | 连接模型与外部工具 | 可读 |
+| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.html) | 组织可复用的任务方法 | 可读 |
+| [27 · 快速使用Claude code](content/chapters/chapter-27.html) | Claude Code 入门 | 可读 |
+| [28 · 快速使用PI](content/chapters/chapter-28.html) | PI 入门 | 可读 |
+| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.html) | DeepSeek Harness 入门 | 可读 |
+| [30 · 补充：Agent框架知识](content/chapters/chapter-30.html) | Agent 框架基础 | 可读 |
+| **第八篇 补充内容** | | |
+| [31 · 补充：大模型基础知识](content/chapters/chapter-31.html) | 模型结构、训练、推理与局限 | 可读 |
 
-## 自动发布
+**内容快照：2026 年 9 月 15 日。** 第 23 章保留原稿中 MiniMax H3 部署教程即将更新的说明，单独标记为“待更新”，当前尚未提供完整视频教程。
 
-网站部署于[公开的魔搭创空间](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook)。`main` 分支中的站点文件更新后，GitHub Actions 的 **Deploy to ModelScope Studio** 工作流会自动运行；维护者也可在 Actions 页面手动触发。
+当前快照包含 347 处正文图片引用、12 个附件链接及 12 个嵌入表格的实际内容。后续更新需明确核对，网站不会自动拉取创作工作区的改动。详见[章节维护说明](content/README.md)与[同步校验记录](content/sync-report.json)。
 
-工作流将已提交的站点文件同步至创空间的 `master` 分支，生成中文创空间卡片并触发部署，核对线上页面与源码提交后才会完成。发布凭据保存在仓库的 `MODELSCOPE_API_KEY` Secret 中。代码与内容统一在 GitHub 维护。
+## 场景实践
 
-## 仓库结构
+| 应用案例 | 探索的实现流程 | 章节 |
+| --- | --- | --- |
+| AI 健身教练 | 识别人体关键点，对比跟练动作与示范 | [16](content/chapters/chapter-16.html) |
+| 智能客服质检 | 从通话录音到文字转写与服务分析 | [17](content/chapters/chapter-17.html) |
+| 语音助手 | 串联语音识别、模型问答与语音合成 | [18](content/chapters/chapter-18.html) |
+| 企业知识问答 | 检索知识库，为回答提供参考依据 | [19](content/chapters/chapter-19.html) |
+| 商品营销图 | 完成商品图像生成与编辑 | [22](content/chapters/chapter-22.html) |
 
-```text
-.
-├── index.html                  # 网站入口与页面结构
-├── favicon.svg                 # 网站图标
-├── assets/
-│   ├── content.js              # 书籍元数据与章节正文
-│   ├── paper.js                # 导航、搜索与阅读交互
-│   ├── styles.css              # 基础样式
-│   ├── paper.css               # 网站主题与布局
-│   ├── review.css              # 局部界面与移动端修复
-│   ├── dada/                   # 搭搭素材、许可证与来源声明
-│   ├── community/              # 社区二维码
-│   ├── review/                 # 移除纸飞机后的背景图
-│   ├── paper/                  # 插画、图标与素材来源说明
-│   ├── home/                   # 共用视觉资源与字体许可
-│   ├── manuscript-20260914/     # 正文图片与附件
-│   └── katex/                  # 本地数学公式渲染器与字体
-├── content/                    # 可审阅的章节源文件与同步证据
-├── scripts/build-content.py    # 生成章节数据
-├── scripts/check-site.mjs       # 正文资源与本地链接检查
-├── CONTRIBUTING.md             # 贡献指南
-├── README.md                   # 英文说明
-├── README.zh-CN.md             # 简体中文说明
-├── 使用说明.txt                 # 本地版本说明
-└── LICENSE                     # Apache License 2.0
+## 读者社区
+
+<p align="center">
+  <img src="assets/dada/dada.webp" width="88" alt="搭搭社区形象">
+</p>
+
+欢迎交流学习问题、分享复现记录，也欢迎把实践经验带回项目。
+
+<table>
+  <tr>
+    <td align="center"><img src="assets/community/qr.png" width="200" alt="魔搭紫皮书社区二维码"><br><strong>魔搭紫皮书社区</strong></td>
+    <td align="center"><img src="assets/community/agentwork-qr.png" width="200" alt="AgentWork 社区二维码"><br><strong>AgentWork 社区</strong></td>
+  </tr>
+</table>
+
+使用微信扫码，或保存图片后从相册识别。如二维码失效，欢迎通过 [Issue](https://github.com/modelscope/ms-cookbook/issues/new) 反馈。
+
+## 参与共建
+
+你可以选择两种方式分享成果：
+
+- **GitHub：** 在 [Issues](https://github.com/modelscope/ms-cookbook/issues) 中反馈问题，或提交范围清晰的 [Pull Request](https://github.com/modelscope/ms-cookbook/pulls)。请注明相关章节或页面、参考依据及验证步骤。
+- **魔搭：** 前往[开发者实践](https://modelscope.cn/spotlight)，选择 **创建内容**，添加专题 **#魔搭紫皮书** 后投稿。
+
+欢迎贡献技术勘误、可复现应用案例、AIGC 工作流与阅读体验改进。界面调整应保留文章内容与结构，正文修订需提供明确来源或作者确认。请勿提交访问凭据、个人隐私数据或未经授权的材料。
+
+完整流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+### 致谢
+
+感谢 [freestylefly](https://github.com/freestylefly)、[yingdachen](https://github.com/yingdachen)、[liucongg](https://github.com/liucongg)，以及每一位帮助项目改进的共建者。以上链接依据仓库公开贡献记录整理；完整内容作者与审校署名将在确认后补充。[查看全部贡献记录 →](https://github.com/modelscope/ms-cookbook/graphs/contributors)
+
+README 的组织方式参考了 [Datawhale Hello-Agents](https://github.com/datawhalechina/hello-agents)。本项目保留魔搭紫皮书自己的章节内容、视觉标识与社区资源。
+
+## 维护说明
+
+<details>
+<summary><strong>章节源文件、校验与仓库结构</strong></summary>
+
+### 内容维护位置
+
+- `content/chapters/`：可审阅的章节 HTML 源文件。
+- `content/manifest.json`：篇章标题、顺序、状态与快照日期。
+- `content/sync-report.json`：导入时的原稿版本与校验证据。
+- `assets/content.js`：网站加载的生成数据。
+- `index.html`、`assets/paper.js` 与站点样式文件：阅读界面。
+- `assets/dada/`、`assets/community/`：插画与社区二维码。
+- `assets/manuscript-20260914/`：本地正文图片与附件。
+
+完成已确认的正文修订后：
+
+```bash
+python3 scripts/build-content.py
+node scripts/build-content.mjs --check
+node scripts/check-site.mjs
 ```
 
-网站使用 HTML、CSS 与浏览器端 JavaScript。`index.html` 通过 `assets/content.js` 加载章节数据，通过 `assets/paper.js` 提供阅读交互。页面使用 URL 片段导航，例如 `#home`、`#contents`、`#paths/aigc`、`#contribute` 与 `#chapter-1`。修改章节源文件后，运行 `python3 scripts/build-content.py` 和 `node scripts/check-site.mjs`；直接阅读现有站点无需构建。
+构建使用 Python 3，校验还需要 Node.js 22 或更新版本。请同时提交源文件与生成数据，并预览受影响的桌面和手机页面。直接阅读现有站点无需执行这些步骤。
 
-## 参与贡献
+</details>
 
-欢迎通过 [GitHub Issues](https://github.com/modelscope/ms-cookbook/issues) 和 [Pull Requests](https://github.com/modelscope/ms-cookbook/pulls) 参与建设。贡献方向包括技术勘误、说明完善、可复现示例、无障碍访问改进及阅读体验修复。
+<details>
+<summary><strong>GitHub → 魔搭创空间自动发布</strong></summary>
 
-1. 对于较大改动，请先创建 Issue，说明问题与计划调整的范围。
-2. Fork 本仓库，为改动创建独立分支。
-3. 说明涉及的章节或页面，并按需提供参考资料与复现步骤。
-4. 在本地预览，检查改动涉及的导航、搜索、图片、附件、代码块与公式；涉及布局时，同时检查移动端效果。
-5. 提交 Pull Request，说明改动内容与验证方式。更新项目说明时，请保持中英文 README 信息一致。
+[部署工作流](.github/workflows/deploy-modelscope.yml)会将 `main` 分支中的站点文件更新发布到公开创空间 `ms-cookbook-team/ms-cookbook`，也支持在 GitHub Actions 手动触发。
 
-请保留所贡献材料的来源说明，并确认拥有相应的分享权限。示例与附件中请勿包含访问凭据或个人隐私数据。
+工作流使用仓库 Secret `MODELSCOPE_API_KEY`，将已提交的文件同步到创空间的 `master` 分支，生成中文创空间卡片并触发部署。只有线上页面与部署提交校验通过，任务才会成功。代码与正文统一在 GitHub 维护。
 
-详细流程见[贡献指南](CONTRIBUTING.md)。也可前往[魔搭开发者实践](https://modelscope.cn/spotlight)，选择「创建内容」，添加专题 **#魔搭紫皮书** 后投稿。网站的「社区共建」页提供交流群二维码和已核实的代码贡献者入口，内容作者及审校名单将在确认署名后补充。
+</details>
 
-## 许可证与致谢
+## 开源协议
 
-本仓库采用 [Apache License 2.0](LICENSE)。随仓库提供的第三方组件保留各自的许可证：
+本仓库采用 [Apache License 2.0](LICENSE)。书中引用的模型、数据集与工具适用各自的许可证及使用条款；正文图片和附件的权利归原作者或相应权利人所有。
 
-- [KaTeX](assets/katex/LICENSE)：MIT License。
-- [Remix Icon](assets/home/REMIX-LICENSE)：Apache License 2.0。
-- [Noto Serif SC](assets/home/NOTO-LICENSE.txt)：SIL Open Font License 1.1。
-- [搭搭插画](https://github.com/NovaWang97/dada-illustrations)：[MIT License](assets/dada/LICENSE)，保留[上游声明](assets/dada/NOTICE.md)。参见[本次素材说明](assets/review/ATTRIBUTION.md)。
+第三方组件保留各自许可证：[KaTeX · MIT](assets/katex/LICENSE)、[Remix Icon · Apache 2.0](assets/home/REMIX-LICENSE)、[Noto Serif SC · SIL OFL 1.1](assets/home/NOTO-LICENSE.txt)、[搭搭 · MIT](assets/dada/LICENSE)。详见[搭搭来源声明](assets/dada/NOTICE.md)、[网站素材说明](assets/paper/ATTRIBUTION.txt)、[共用素材说明](assets/home/ATTRIBUTION.txt)与[插画说明](assets/review/ATTRIBUTION.md)。
 
-正文图片与附件的权利归原作者或相应权利人所有。素材来源详见[网站素材说明](assets/paper/ATTRIBUTION.txt)与[共用素材说明](assets/home/ATTRIBUTION.txt)。书中涉及的模型、数据集与工具，适用各自的许可证及使用条款。
+<p align="center"><strong>一起学习，一起实践，把经验分享给下一位开发者。</strong></p>

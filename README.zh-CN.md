@@ -22,7 +22,7 @@
   <a href="https://modelscope.cn/studios/canghe/ms-cookbook">在线阅读</a> ·
   <a href="#内容目录">探索全书</a> ·
   <a href="#参与贡献">参与贡献</a> ·
-  <a href="https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1">阅读飞书原稿</a>
+  <a href="https://modelscope.cn/spotlight">魔搭开发者实践</a>
 </p>
 
 ## 这是什么项目？
@@ -46,7 +46,8 @@
 | --- | --- |
 | 跑通第一个开源模型 | **从零开始：** 基础认知 → 任务选型 → 第一次推理 |
 | 让模型适应自己的场景 | **深入模型：** 训练数据 → 微调 → 评测 |
-| 开发一个 AI 应用 | **走向应用：** 知识问答 → AIGC → Agent 与工具 |
+| 开发一个 AI 应用 | **走向应用：** 知识问答 → 语音助手 → Agent 与工具 |
+| 创作图像与视频作品 | **AIGC 创作：** 生成模型 → 风格定制 → 营销图与短剧 |
 
 书籍正文与网站界面目前采用**简体中文**。本仓库提供阅读网站、章节正文与配套媒体资源，英文 README 提供项目概览与运行说明。
 
@@ -72,7 +73,7 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 如果 `4173` 端口已被占用，请将命令与浏览器地址中的端口一并改为 `4174`。保持 `index.html` 与 `assets/` 目录的相对位置，并以仓库根目录作为 HTTP 服务目录。
 
-下载完成后，仓库内的阅读内容可在本地访问。飞书原稿及其他外部资源链接需要联网，部分资源可能需要访问权限。
+下载完成后，仓库内的阅读内容可在本地访问。GitHub、魔搭开发者实践及其他外部资源链接需要联网。
 
 ## 内容目录
 
@@ -93,7 +94,7 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 当前内容快照日期为 **2026 年 9 月 14 日**，共 **31 章，其中 30 章可读**。第 23 章《开源模型也能做出像样的AI短剧吗？》保留占位说明，正文待补充。
 
-快照包含 347 处正文图片引用与 12 个附件链接。内容随仓库保存，后续修改不会自动从[飞书原稿](https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1)同步。
+快照包含 347 处正文图片引用与 12 个附件链接。内容随仓库保存，独立稿件位于 [chapters](chapters/README.md)，修改后运行 `node scripts/build-content.mjs` 更新网站内容。
 
 ### 阅读体验
 
@@ -111,8 +112,10 @@ python3 -m http.server 4173 --bind 127.0.0.1
 .
 ├── index.html                  # 网站入口与页面结构
 ├── favicon.svg                 # 网站图标
+├── chapters/                  # Editable chapter manuscripts and metadata
+├── CONTRIBUTING.md            # Contribution workflow
 ├── assets/
-│   ├── content.js              # 书籍元数据与章节正文
+│   ├── content.js              # 从 chapters/ 构建的站点内容
 │   ├── paper.js                # 导航、搜索与阅读交互
 │   ├── styles.css              # 基础样式
 │   ├── paper.css               # 网站主题与布局
@@ -129,6 +132,13 @@ python3 -m http.server 4173 --bind 127.0.0.1
 网站使用 HTML、CSS 与浏览器端 JavaScript。`index.html` 通过 `assets/content.js` 加载章节数据，通过 `assets/paper.js` 提供阅读交互。页面使用 URL 片段导航，例如 `#home`、`#contents` 与 `#chapter-1`。
 
 ## 参与贡献
+
+网站的「共学共建」页面提供共学群二维码、投稿入口和共建者名录。投稿支持两种方式：
+
+- **GitHub PR：** 按 [贡献指南](CONTRIBUTING.md) 编辑章节或网站，提交 Pull Request。
+- **魔搭投稿：** 在 [魔搭开发者实践](https://modelscope.cn/spotlight) 选择「创建内容」，并选择专题 **#魔搭紫皮书**。
+
+欢迎具体行业案例，以及独立 AIGC 路径中的图像、视频、音频与音乐创作、评测实践。
 
 欢迎通过 [GitHub Issues](https://github.com/modelscope/ms-cookbook/issues) 和 [Pull Requests](https://github.com/modelscope/ms-cookbook/pulls) 参与建设。贡献方向包括技术勘误、说明完善、可复现示例、无障碍访问改进及阅读体验修复。
 

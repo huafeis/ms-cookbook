@@ -22,7 +22,7 @@
   <a href="https://modelscope.cn/studios/canghe/ms-cookbook">Read online</a> ·
   <a href="#contents">Explore the book</a> ·
   <a href="#contributing">Contribute</a> ·
-  <a href="https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1">Read the source manuscript</a>
+  <a href="https://modelscope.cn/spotlight">ModelScope Developer Practices</a>
 </p>
 
 ## What is ModelScope Cookbook?
@@ -46,7 +46,8 @@ The aim is to help readers build the skills to **choose an appropriate model, ge
 | --- | --- |
 | Run your first open-source model | **Start with the basics:** model fundamentals → task selection → first inference |
 | Adapt a model to your use case | **Develop model expertise:** training data → fine-tuning → evaluation |
-| Build an AI application | **Explore applications:** knowledge assistants → generative AI → agents and tools |
+| Build an AI application | **Explore applications:** knowledge assistants → voice assistants → agents and tools |
+| Create images and videos | **AIGC creation:** generative models → style customization → marketing visuals and short dramas |
 
 The book and website are currently in **Simplified Chinese**. This repository includes the reading website, chapter content, and supporting media; the English README provides an overview and setup instructions.
 
@@ -72,7 +73,7 @@ Open [http://127.0.0.1:4173/#home](http://127.0.0.1:4173/#home). Stop the server
 
 If port `4173` is in use, replace it with `4174` in both the command and the browser address. Keep `index.html` and the `assets/` directory together, and serve the repository root over HTTP.
 
-Once downloaded, the bundled reading content is available locally. Links to the source manuscript and other external resources require an internet connection and may require access permissions.
+Once downloaded, the bundled reading content is available locally. GitHub, ModelScope Developer Practices, and other external links require an internet connection.
 
 ## Contents
 
@@ -93,7 +94,7 @@ Use the website's table of contents to browse the book, its reading paths to fol
 
 The current snapshot is dated **September 14, 2026** and includes **31 chapters, with 30 available to read**. Chapter 23, on AI-generated short dramas, is a placeholder pending additional content.
 
-The snapshot includes 347 chapter-image references and 12 attachment links. Content is bundled in this repository and does not automatically synchronize with the [source manuscript on Feishu](https://my.feishu.cn/wiki/TjiUw6B2ZiEKDbk3ZTJcAQ3MnS1).
+The snapshot includes 347 chapter-image references and 12 attachment links. Editable manuscripts are bundled under [chapters](chapters/README.md). After editing them, run `node scripts/build-content.mjs` to update the website content.
 
 ### Reading experience
 
@@ -111,6 +112,8 @@ The workflow synchronizes committed website files to the Studio's `master` branc
 .
 ├── index.html                  # Website entry point and page structure
 ├── favicon.svg                 # Site icon
+├── chapters/                  # Editable chapter manuscripts and metadata
+├── CONTRIBUTING.md            # Contribution workflow
 ├── assets/
 │   ├── content.js              # Book metadata and chapter content
 │   ├── paper.js                # Navigation, search, and reading interactions
@@ -129,6 +132,13 @@ The workflow synchronizes committed website files to the Studio's `master` branc
 The site uses HTML, CSS, and browser-side JavaScript. `index.html` loads the chapter data from `assets/content.js` and the reading interface from `assets/paper.js`. Navigation uses URL fragments, such as `#home`, `#contents`, and `#chapter-1`.
 
 ## Contributing
+
+The community page includes the study group QR code, contribution options, and a contributor directory. See [CONTRIBUTING.md](CONTRIBUTING.md) for the editing workflow.
+
+- Submit a pull request on GitHub.
+- Or visit [ModelScope Developer Practices](https://modelscope.cn/spotlight), choose “创建内容” (Create content), and select the **#魔搭紫皮书** topic.
+
+A dedicated **AIGC creation** learning path welcomes image, video, audio/music workflows, and evaluation practices. The applications path focuses on knowledge Q&A, voice assistants, and Agent tools.
 
 Contributions are welcome through [GitHub Issues](https://github.com/modelscope/ms-cookbook/issues) and [pull requests](https://github.com/modelscope/ms-cookbook/pulls). Useful contributions include technical corrections, clearer explanations, reproducible examples, accessibility improvements, and fixes to the reading experience.
 

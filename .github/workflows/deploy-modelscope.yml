@@ -7,6 +7,9 @@ on:
       - 'index.html'
       - 'favicon.svg'
       - 'assets/**'
+      - 'chapters/**'
+      - 'CONTRIBUTING.md'
+      - 'scripts/build-content.mjs'
       - 'README*.md'
       - 'LICENSE'
       - 'scripts/deploy-modelscope.mjs'
@@ -34,6 +37,8 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      - name: Verify chapter build
+        run: node scripts/build-content.mjs --check
       - name: Sync and deploy the website
         env:
           MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}

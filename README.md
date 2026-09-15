@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="#getting-started">Get started</a> ·
-  <a href="https://modelscope.cn/studios/canghe/ms-cookbook">Read online</a> ·
+  <a href="https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook">Read online</a> ·
   <a href="#contents">Explore the book</a> ·
   <a href="#contributing">Contribute</a> ·
   <a href="content/">Browse chapter sources</a>
@@ -102,7 +102,7 @@ The website provides full-text keyword search, guided reading paths, chapter nav
 
 ## Deployment
 
-The website is published as a [public ModelScope Studio](https://modelscope.cn/studios/canghe/ms-cookbook). Changes to site files on `main` trigger the **Deploy to ModelScope Studio** GitHub Actions workflow; maintainers can also run it manually from the Actions tab.
+The website is published as a [public ModelScope Studio](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook). Changes to site files on `main` trigger the **Deploy to ModelScope Studio** GitHub Actions workflow; maintainers can also run it manually from the Actions tab.
 
 The workflow synchronizes committed website files to the Studio's `master` branch, prepares a Chinese Studio card, and triggers deployment. It verifies the live page and its source commit before completing. The `MODELSCOPE_API_KEY` repository secret provides deployment authentication. GitHub remains the source for code and content changes.
 

@@ -47,5 +47,5 @@ jobs:
       - name: Sync and deploy the website
         env:
           MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}
-          MODELSCOPE_STUDIO: canghe/ms-cookbook
+          MODELSCOPE_STUDIO: ms-cookbook-team/ms-cookbook
         run: node scripts/deploy-modelscope.mjs

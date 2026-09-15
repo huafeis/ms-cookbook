@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const token = process.env.MODELSCOPE_API_KEY;
-const studio = process.env.MODELSCOPE_STUDIO || 'canghe/ms-cookbook';
+const studio = process.env.MODELSCOPE_STUDIO || 'ms-cookbook-team/ms-cookbook';
 const endpoint = 'https://modelscope.cn';
 if (!token) throw new Error('Set MODELSCOPE_API_KEY before deploying.');
 if (!/^[\w-]+\/[\w-]+$/.test(studio)) throw new Error('Invalid MODELSCOPE_STUDIO.');

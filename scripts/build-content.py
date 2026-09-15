@@ -14,6 +14,7 @@ import shutil
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from urllib.parse import urlparse
+from chapter_markdown import to_markdown
 
 ROOT = Path(__file__).resolve().parent.parent
 CONTENT = ROOT / 'content'
@@ -36,7 +37,7 @@ def xml_dump(node):
 def import_snapshot(snapshot, date):
     from PIL import Image, ImageOps
     catalog = json.loads((snapshot / 'catalog.json').read_text())
-    chapter_dir = CONTENT / 'chapters'
+    chapter_dir = CONTENT / 'source-html'
     chapter_dir.mkdir(parents=True, exist_ok=True)
     routes = {c['token']: '#chapter-' + str(c['number']) for c in catalog['chapters']}
     media_index = {m['token']: m for m in json.loads((snapshot / 'media-index.json').read_text())}
@@ -149,7 +150,7 @@ def import_snapshot(snapshot, date):
         expected = [(n.tag, prose(n)) for n in original.iter() if n.tag in prose_tags]
         actual = [(n.tag, plain(n)) for n in article.iter() if n.tag in prose_tags]
         assert actual == expected, f'Prose mismatch in {number}'
-        file = f'chapters/chapter-{number:02d}.html'
+        file = f'source-html/chapter-{number:02d}.html'
         # Newlines between top-level blocks make source reviewable without altering inline text/code.
         source_html = '<article>\n' + '\n'.join(xml_dump(n) for n in article) + '\n</article>\n'
         (CONTENT / file).write_text(source_html)
@@ -167,6 +168,14 @@ def build(check=False):
     for entry in manifest['chapters']:
         number = entry['number']
         article = ET.fromstring((CONTENT / entry['file']).read_text())
+        markdown = CONTENT / 'chapters' / f'chapter-{number:02d}.md'
+        markdown_output = to_markdown(article, number)
+        if check:
+            if not markdown.exists() or markdown.read_text() != markdown_output:
+                raise SystemExit(f'{markdown.relative_to(ROOT)} is out of date. Run python3 scripts/build-content.py.')
+        else:
+            markdown.parent.mkdir(parents=True, exist_ok=True)
+            markdown.write_text(markdown_output)
         title = article.find('h1')
         assert title is not None and plain(title) == entry['title']
         article.remove(title)
@@ -193,7 +202,7 @@ def build(check=False):
                     wrapper.append(child)
                     parent.insert(i, wrapper)
         body = '\n'.join(dump(n) for n in article)
-        chapters.append({'id': f'chapter-{number}', 'number': number, 'title': entry['title'], 'sourceUrl': f'{REPO}/blob/main/content/{entry["file"]}', 'editUrl': f'{REPO}/edit/main/content/{entry["file"]}', 'minutes': max(1, round(len(re.sub(r'\s+', '', plain(article))) / 520)) if entry['status']=='ready' else 0, 'status': entry['status'], 'headings': headings, 'html': body, 'imageCount': len(list(article.iter('img'))), 'attachmentCount': sum(n.get('class') == 'attachment' for n in article.iter('a'))})
+        chapters.append({'id': f'chapter-{number}', 'number': number, 'title': entry['title'], 'sourceUrl': f'{REPO}/blob/main/content/chapters/chapter-{number:02d}.md', 'editUrl': f'{REPO}/edit/main/content/{entry["file"]}', 'minutes': max(1, round(len(re.sub(r'\s+', '', plain(article))) / 520)) if entry['status']=='ready' else 0, 'status': entry['status'], 'headings': headings, 'html': body, 'imageCount': len(list(article.iter('img'))), 'attachmentCount': sum(n.get('class') == 'attachment' for n in article.iter('a'))})
     payload = {k: manifest[k] for k in ('title', 'sourceUpdated')}
     payload.update(sourceUrl=f'{REPO}/tree/main/content', chapterCount=len(chapters), readyCount=sum(c['status']=='ready' for c in chapters), imageCount=sum(c['imageCount'] for c in chapters), attachmentCount=sum(c['attachmentCount'] for c in chapters))
     payload['parts'] = [{'id': f'part-{i+1:02d}', **p, 'chapters': [f'chapter-{c["number"]}' for c in manifest['chapters'] if c['partIndex']==i]} for i,p in enumerate(manifest['parts'])]

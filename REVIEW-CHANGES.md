@@ -4,6 +4,8 @@
 
 ## 后续整合说明
 
+GitHub 阅读入口现已改为 `content/chapters/*.md`；原 HTML 文件原样移至 `content/source-html/`。构建时同时生成 Markdown 和网站数据，以保持正文一致。
+
 以下表格保留此次共建提交的历史记录。后续发布以维护者确认的页面与 2026-09-15 原稿为准：保留紫色主题，移除纸飞机并引入搭搭素材；社区页展示魔搭紫皮书与 AgentWork 两个二维码及下方说明。
 
 章节源文件统一迁移至 `content/chapters/`，同步证据见 `content/sync-report.json`。旧稿件可从 Git 历史恢复；`node scripts/build-content.mjs` 和 `--check` 继续可用，统一调用 Python 构建器。`#community` 兼容跳转至 `#contribute`。现有可读场景为五个，第 23 章按最新原稿单独标记待补充；AIGC 路径包含四个可读步骤。完整作者与评审署名仍待确认。

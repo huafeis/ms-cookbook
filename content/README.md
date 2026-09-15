@@ -1,16 +1,17 @@
-# 章节源文件
+# 章节阅读与维护
 
-本目录保存魔搭紫皮书的可审阅章节源文件。每章对应 `chapters/chapter-NN.html`，文件中的段落、标题层级、列表、表格、代码、公式、图片和附件顺序来自原稿。
+在 GitHub 阅读请打开 [Markdown 章节目录](chapters/)。每章对应 `chapters/chapter-NN.md`，支持直接显示正文、图片、代码、公式和表格。
 
 - `manifest.json`：篇章顺序、标题、阅读状态与同步日期。
-- `chapters/`：章节正文，采用可直接审阅的语义 HTML；保留 XML 兼容的闭合标签。
+- `chapters/`：自动生成的 Markdown 阅读版。
+- `source-html/`：用于网站构建的原始 HTML，保留段落、标题层级、列表、表格、代码、公式、图片和附件顺序，采用 XML 兼容的闭合标签。
 - `sync-report.json`：本次原稿同步的版本号、内容哈希及逐章校验结果。它记录导入时的证据，不会随日常修改自动改写。
 
 ## 修改与构建
 
 正文修改必须有明确的勘误依据或作者确认。请保留单篇文章的内容、章节结构与原有代码；网站布局调整只修改页面代码与样式。
 
-修改章节源文件后，在仓库根目录运行：
+修改 `source-html/` 下的章节源文件后，在仓库根目录运行：
 
 ```bash
 python3 scripts/build-content.py
@@ -18,7 +19,7 @@ node scripts/check-site.mjs
 python3 -m http.server 4174 --bind 127.0.0.1
 ```
 
-构建脚本从源文件生成 `assets/content.js`，加入站内锚点、阅读元数据和表格滚动容器，不改写正文。请同时提交修改后的源文件与生成文件。
+构建脚本同时生成 `chapters/*.md` 和 `assets/content.js`，不改写正文。Markdown 中的复杂表格使用 GitHub 可渲染的 HTML 表格保留单元格结构。请同时提交源文件与生成文件，不要独立修改 Markdown。运行 `python3 scripts/build-content.py --check` 可检查两种输出是否过期。
 
 原稿中的空标题仍保留在源文件中，网站目录会跳过无文字的条目。第 23 章当前保留原稿的待更新说明。嵌入表格的实际单元格内容随正文提供，图片与附件使用本地相对路径。
 

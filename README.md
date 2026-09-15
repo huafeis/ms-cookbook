@@ -60,10 +60,10 @@ Reading locally requires Python 3 and a modern browser; it requires no project d
 
 | Your goal | Recommended chapters | What you will practice |
 | --- | --- | --- |
-| **Get started** | [01](content/chapters/chapter-01.html) → [05](content/chapters/chapter-05.html) → [07](content/chapters/chapter-07.html) | Understand models, define a task, and run a first inference |
-| **Adapt a model** | [12](content/chapters/chapter-12.html) → [13](content/chapters/chapter-13.html) → [15](content/chapters/chapter-15.html) | Prepare training data, fine-tune, and evaluate against a baseline |
-| **Build an application** | [19](content/chapters/chapter-19.html) → [25](content/chapters/chapter-25.html) → [26](content/chapters/chapter-26.html) | Combine knowledge retrieval, external tools, and reusable skills |
-| **Create with generative AI** | [20](content/chapters/chapter-20.html) → [21](content/chapters/chapter-21.html) → [22](content/chapters/chapter-22.html) → [24](content/chapters/chapter-24.html) | Explore examples, customize image LoRA, create product visuals, and study the foundations |
+| **Get started** | [01](content/chapters/chapter-01.md) → [05](content/chapters/chapter-05.md) → [07](content/chapters/chapter-07.md) | Understand models, define a task, and run a first inference |
+| **Adapt a model** | [12](content/chapters/chapter-12.md) → [13](content/chapters/chapter-13.md) → [15](content/chapters/chapter-15.md) | Prepare training data, fine-tune, and evaluate against a baseline |
+| **Build an application** | [19](content/chapters/chapter-19.md) → [25](content/chapters/chapter-25.md) → [26](content/chapters/chapter-26.md) | Combine knowledge retrieval, external tools, and reusable skills |
+| **Create with generative AI** | [20](content/chapters/chapter-20.md) → [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [24](content/chapters/chapter-24.md) | Explore examples, customize image LoRA, create product visuals, and study the foundations |
 
 ### Who is this for?
 
@@ -75,63 +75,59 @@ Basic Python and command-line familiarity are useful for the coding exercises. B
 
 ## Book contents
 
-Links below open the reviewable chapter source on GitHub. For formatted text, images, code, and formulas, use the [online reading website](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook). Chapter titles retain the original Chinese wording.
+Read each chapter on GitHub, or use the [online reading website](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook). Chapter titles are in Chinese.
 
-| Chapter source · original Chinese title | Focus | Status |
-| --- | --- | --- |
-| **Part 1 · Understanding open-source models** | | |
-| [01 · 开源模型正在改变什么](content/chapters/chapter-01.html) | Openness, capabilities, and licensing | Available |
-| [02 · 开源模型还没用上，先卡在下载这一步？](content/chapters/chapter-02.html) | Model discovery, model cards, and downloads | Available |
-| [03 · 数据，是你要做开源模型微调的基石](content/chapters/chapter-03.html) | Data sources, quality, and preparation | Available |
-| [04 · 没有资源也能玩开源模型，因为这里资源免费](content/chapters/chapter-04.html) | Model and compute resources | Available |
-| **Part 2 · From a problem to a model task** | | |
-| [05 · 要把业务问题转换成模型任务问题](content/chapters/chapter-05.html) | Tasks, inputs, outputs, and evaluation criteria | Available |
-| [06 · 先评再选：用EvalScope形成开源模型的第一份报告](content/chapters/chapter-06.html) | Model-selection baselines with EvalScope | Available |
-| **Part 3 · Running your first models** | | |
-| [07 · 30分钟带你快速看到第一个结果](content/chapters/chapter-07.html) | A first inference run | Available |
-| [08 · 多大模型，选择什么样的服务器配置](content/chapters/chapter-08.html) | Model size, memory, and server selection | Available |
-| [09 · 笔记本也能跑开源模型，先从Ollama开始](content/chapters/chapter-09.html) | Local inference with Ollama | Available |
-| [10 · 把模型放到云端跑，用Notebook试试CPU和GPU](content/chapters/chapter-10.html) | CPU and GPU inference in cloud notebooks | Available |
-| [11 · 模型需要资源太多，量化能帮上什么忙？](content/chapters/chapter-11.html) | Quantization and resource trade-offs | Available |
-| **Part 4 · Fine-tuning and evaluation** | | |
-| [12 · 业务素材这么多，怎么变成能训练的数据？](content/chapters/chapter-12.html) | Turning business materials into training data | Available |
-| [13 · 快速用ms-swift，完成开源模型的轻量微调](content/chapters/chapter-13.html) | Lightweight fine-tuning with ms-swift | Available |
-| [14 · 模型已经会回答了，为什么还要做偏好对齐？](content/chapters/chapter-14.html) | Goals and methods of preference alignment | Available |
-| [15 · 微调有没有用，测才知道？](content/chapters/chapter-15.html) | Comparing baseline and fine-tuned models | Available |
-| **Part 5 · Application systems** | | |
-| [16 · AI健身教练：跟着视频练，让AI指出动作不标准的地方](content/chapters/chapter-16.html) | Pose estimation and movement comparison | Available |
-| [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.html) | Call transcription and quality analysis | Available |
-| [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.html) | Speech recognition, Q&A, and synthesis | Available |
-| [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.html) | Knowledge retrieval and RAG | Available |
-| **Part 6 · Generative AI** | | |
-| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.html) | Open generative-model use cases | Available |
-| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.html) | Image LoRA customization with DiffSynth | Available |
-| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.html) | Product-image generation and editing | Available |
-| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.html) | MiniMax H3 deployment tutorial pending | Pending |
-| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.html) | Image and video generation fundamentals | Available |
-| **Part 7 · Agents** | | |
-| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.html) | Connecting models to external tools | Available |
-| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.html) | Reusable task methods and workflows | Available |
-| [27 · 快速使用Claude code](content/chapters/chapter-27.html) | Getting started with Claude Code | Available |
-| [28 · 快速使用PI](content/chapters/chapter-28.html) | Getting started with PI | Available |
-| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.html) | Getting started with DeepSeek Harness | Available |
-| [30 · 补充：Agent框架知识](content/chapters/chapter-30.html) | Agent framework fundamentals | Available |
-| **Part 8 · Supplementary fundamentals** | | |
-| [31 · 补充：大模型基础知识](content/chapters/chapter-31.html) | Model architecture, training, inference, and limitations | Available |
-
-**Content snapshot: September 15, 2026.** Chapter 23 retains the manuscript's notice about an upcoming MiniMax H3 deployment tutorial. It is listed separately as pending; it is not a completed video tutorial.
-
-The snapshot includes 347 chapter-image references, 12 attachment links, and the contents of 12 embedded spreadsheets. Updates are reviewed explicitly; the site does not automatically pull changes from the authoring workspace. See the [source guide](content/README.md) and [sync evidence](content/sync-report.json).
+| Chapter | Focus |
+| --- | --- |
+| **Part 1 · Understanding open-source models** | |
+| [01 · 开源模型正在改变什么](content/chapters/chapter-01.md) | Openness, capabilities, and licensing |
+| [02 · 开源模型还没用上，先卡在下载这一步？](content/chapters/chapter-02.md) | Model discovery, model cards, and downloads |
+| [03 · 数据，是你要做开源模型微调的基石](content/chapters/chapter-03.md) | Data sources, quality, and preparation |
+| [04 · 没有资源也能玩开源模型，因为这里资源免费](content/chapters/chapter-04.md) | Model and compute resources |
+| **Part 2 · From a problem to a model task** | |
+| [05 · 要把业务问题转换成模型任务问题](content/chapters/chapter-05.md) | Tasks, inputs, outputs, and evaluation criteria |
+| [06 · 先评再选：用EvalScope形成开源模型的第一份报告](content/chapters/chapter-06.md) | Model-selection baselines with EvalScope |
+| **Part 3 · Running your first models** | |
+| [07 · 30分钟带你快速看到第一个结果](content/chapters/chapter-07.md) | A first inference run |
+| [08 · 多大模型，选择什么样的服务器配置](content/chapters/chapter-08.md) | Model size, memory, and server selection |
+| [09 · 笔记本也能跑开源模型，先从Ollama开始](content/chapters/chapter-09.md) | Local inference with Ollama |
+| [10 · 把模型放到云端跑，用Notebook试试CPU和GPU](content/chapters/chapter-10.md) | CPU and GPU inference in cloud notebooks |
+| [11 · 模型需要资源太多，量化能帮上什么忙？](content/chapters/chapter-11.md) | Quantization and resource trade-offs |
+| **Part 4 · Fine-tuning and evaluation** | |
+| [12 · 业务素材这么多，怎么变成能训练的数据？](content/chapters/chapter-12.md) | Turning business materials into training data |
+| [13 · 快速用ms-swift，完成开源模型的轻量微调](content/chapters/chapter-13.md) | Lightweight fine-tuning with ms-swift |
+| [14 · 模型已经会回答了，为什么还要做偏好对齐？](content/chapters/chapter-14.md) | Goals and methods of preference alignment |
+| [15 · 微调有没有用，测才知道？](content/chapters/chapter-15.md) | Comparing baseline and fine-tuned models |
+| **Part 5 · Application systems** | |
+| [16 · AI健身教练：跟着视频练，让AI指出动作不标准的地方](content/chapters/chapter-16.md) | Pose estimation and movement comparison |
+| [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.md) | Call transcription and quality analysis |
+| [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.md) | Speech recognition, Q&A, and synthesis |
+| [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.md) | Knowledge retrieval and RAG |
+| **Part 6 · Generative AI** | |
+| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.md) | Open generative-model use cases |
+| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.md) | Image LoRA customization with DiffSynth |
+| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.md) | Product-image generation and editing |
+| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.md) | MiniMax H3 deployment tutorial pending |
+| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.md) | Image and video generation fundamentals |
+| **Part 7 · Agents** | |
+| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.md) | Connecting models to external tools |
+| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.md) | Reusable task methods and workflows |
+| [27 · 快速使用Claude code](content/chapters/chapter-27.md) | Getting started with Claude Code |
+| [28 · 快速使用PI](content/chapters/chapter-28.md) | Getting started with PI |
+| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.md) | Getting started with DeepSeek Harness |
+| [30 · 补充：Agent框架知识](content/chapters/chapter-30.md) | Agent framework fundamentals |
+| **Part 8 · Supplementary fundamentals** | |
+| [31 · 补充：大模型基础知识](content/chapters/chapter-31.md) | Model architecture, training, inference, and limitations |
 
 ## Application examples
 
 | Example | Workflow explored | Chapter |
 | --- | --- | --- |
-| AI fitness coach | Compare body keypoints and exercise movements | [16](content/chapters/chapter-16.html) |
-| Customer-service quality analysis | Turn call recordings into text and analysis | [17](content/chapters/chapter-17.html) |
-| Speech assistant | Connect speech recognition, model responses, and speech synthesis | [18](content/chapters/chapter-18.html) |
-| Enterprise knowledge assistant | Retrieve reference material for grounded answers | [19](content/chapters/chapter-19.html) |
-| Product marketing visuals | Generate and edit product images | [22](content/chapters/chapter-22.html) |
+| AI fitness coach | Compare body keypoints and exercise movements | [16](content/chapters/chapter-16.md) |
+| Customer-service quality analysis | Turn call recordings into text and analysis | [17](content/chapters/chapter-17.md) |
+| Speech assistant | Connect speech recognition, model responses, and speech synthesis | [18](content/chapters/chapter-18.md) |
+| Enterprise knowledge assistant | Retrieve reference material for grounded answers | [19](content/chapters/chapter-19.md) |
+| Product marketing visuals | Generate and edit product images | [22](content/chapters/chapter-22.md) |
 
 ## Community
 
@@ -163,9 +159,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
 ### Acknowledgments
 
-Thank you to [freestylefly](https://github.com/freestylefly), [yingdachen](https://github.com/yingdachen), [liucongg](https://github.com/liucongg), and everyone helping improve the project. These links reflect public repository contributions; complete author and reviewer credits will be added after confirmation. [View all contributors →](https://github.com/modelscope/ms-cookbook/graphs/contributors)
+Thank you to [freestylefly](https://github.com/freestylefly), [yingdachen](https://github.com/yingdachen), [liucongg](https://github.com/liucongg), and everyone helping improve the project. [View all contributors →](https://github.com/modelscope/ms-cookbook/graphs/contributors)
 
-The README organization draws inspiration from [Datawhale's Hello-Agents](https://github.com/datawhalechina/hello-agents). The chapter content, project identity, and community resources here belong to ModelScope Cookbook.
+Thanks to [Datawhale's Hello-Agents](https://github.com/datawhalechina/hello-agents) for the README organization reference.
 
 ## Maintenance
 
@@ -174,7 +170,8 @@ The README organization draws inspiration from [Datawhale's Hello-Agents](https:
 
 ### Source of truth
 
-- `content/chapters/`: reviewable chapter HTML.
+- `content/chapters/`: GitHub-readable Markdown chapters, generated during builds.
+- `content/source-html/`: canonical HTML sources that preserve the manuscript structure; make content edits here.
 - `content/manifest.json`: titles, order, status, and snapshot date.
 - `content/sync-report.json`: import-time source revisions and verification evidence.
 - `assets/content.js`: generated chapter data loaded by the website.
@@ -208,5 +205,3 @@ The workflow uses the repository secret `MODELSCOPE_API_KEY`, synchronizes commi
 This repository uses the [Apache License 2.0](LICENSE). Referenced models, datasets, and tools have their own licenses and terms. Chapter images and attachments remain subject to the rights of their authors or respective rights holders.
 
 Bundled third-party components retain their licenses: [KaTeX · MIT](assets/katex/LICENSE), [Remix Icon · Apache 2.0](assets/home/REMIX-LICENSE), [Noto Serif SC · SIL OFL 1.1](assets/home/NOTO-LICENSE.txt), and [Dada · MIT](assets/dada/LICENSE). See the [Dada notice](assets/dada/NOTICE.md), [site attribution](assets/paper/ATTRIBUTION.txt), [shared asset attribution](assets/home/ATTRIBUTION.txt), and [artwork notes](assets/review/ATTRIBUTION.md).
-
-<p align="center"><strong>Learn together. Build together. Share what works.</strong></p>

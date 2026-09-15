@@ -30,7 +30,9 @@ function checkLinks(html,base='.'){
 for(const chapter of data.chapters){
   assert(!/<(?:script|iframe|object|embed)\b/i.test(chapter.html));
   assert(chapter.sourceUrl.startsWith('https://github.com/modelscope/ms-cookbook/blob/main/content/chapters/'));
-  assert(chapter.editUrl.startsWith('https://github.com/modelscope/ms-cookbook/edit/main/content/chapters/'));
+  assert(chapter.sourceUrl.endsWith('.md'));
+  assert(chapter.editUrl.startsWith('https://github.com/modelscope/ms-cookbook/edit/main/content/source-html/'));
+  assert(existsSync(resolve(root,'content/chapters',`chapter-${String(chapter.number).padStart(2,'0')}.md`)));
   const anchors=new Set([...chapter.html.matchAll(/id="([^"]+)"/g)].map(m=>m[1]));
   for(const heading of chapter.headings)assert(anchors.has(heading.id));
   imageCount+=(chapter.html.match(/<img\b/g)||[]).length;

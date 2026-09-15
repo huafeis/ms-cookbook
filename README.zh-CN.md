@@ -60,10 +60,10 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 | 你的目标 | 推荐章节 | 实践收获 |
 | --- | --- | --- |
-| **从零开始** | [01](content/chapters/chapter-01.html) → [05](content/chapters/chapter-05.html) → [07](content/chapters/chapter-07.html) | 理解模型、定义任务，完成第一次推理 |
-| **深入模型** | [12](content/chapters/chapter-12.html) → [13](content/chapters/chapter-13.html) → [15](content/chapters/chapter-15.html) | 准备训练数据、开展轻量微调，用评测检验效果 |
-| **走向应用** | [19](content/chapters/chapter-19.html) → [25](content/chapters/chapter-25.html) → [26](content/chapters/chapter-26.html) | 连接知识库、外部工具与可复用 Skill |
-| **AIGC 创作** | [20](content/chapters/chapter-20.html) → [21](content/chapters/chapter-21.html) → [22](content/chapters/chapter-22.html) → [24](content/chapters/chapter-24.html) | 从案例出发，学习图像 LoRA、商品图创作与理论基础 |
+| **从零开始** | [01](content/chapters/chapter-01.md) → [05](content/chapters/chapter-05.md) → [07](content/chapters/chapter-07.md) | 理解模型、定义任务，完成第一次推理 |
+| **深入模型** | [12](content/chapters/chapter-12.md) → [13](content/chapters/chapter-13.md) → [15](content/chapters/chapter-15.md) | 准备训练数据、开展轻量微调，用评测检验效果 |
+| **走向应用** | [19](content/chapters/chapter-19.md) → [25](content/chapters/chapter-25.md) → [26](content/chapters/chapter-26.md) | 连接知识库、外部工具与可复用 Skill |
+| **AIGC 创作** | [20](content/chapters/chapter-20.md) → [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [24](content/chapters/chapter-24.md) | 从案例出发，学习图像 LoRA、商品图创作与理论基础 |
 
 ### 适合谁学？怎么学？
 
@@ -75,63 +75,59 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 ## 内容导航
 
-下方链接指向 GitHub 中可审阅的章节源文件。完整的正文、图片、代码与公式排版，请使用[在线阅读网站](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook)。章节名称与原稿保持一致。
+点击章节在 GitHub 阅读，或前往[在线阅读网站](https://modelscope.cn/studios/ms-cookbook-team/ms-cookbook)。
 
-| 章节与源文件 | 关键内容 | 状态 |
-| --- | --- | --- |
-| **第一篇　认识开源模型** | | |
-| [01 · 开源模型正在改变什么](content/chapters/chapter-01.html) | 开放程度、能力边界与许可证 | 可读 |
-| [02 · 开源模型还没用上，先卡在下载这一步？](content/chapters/chapter-02.html) | 模型库检索、模型卡与下载方式 | 可读 |
-| [03 · 数据，是你要做开源模型微调的基石](content/chapters/chapter-03.html) | 数据来源、质量与微调准备 | 可读 |
-| [04 · 没有资源也能玩开源模型，因为这里资源免费](content/chapters/chapter-04.html) | 模型与算力资源入口 | 可读 |
-| **第二篇　从问题出发：找到适合场景的开源模型** | | |
-| [05 · 要把业务问题转换成模型任务问题](content/chapters/chapter-05.html) | 任务定义、输入输出与评估标准 | 可读 |
-| [06 · 先评再选：用EvalScope形成开源模型的第一份报告](content/chapters/chapter-06.html) | 使用 EvalScope 建立选型基线 | 可读 |
-| **第三篇　跑得起：让第一个开源模型工作起来** | | |
-| [07 · 30分钟带你快速看到第一个结果](content/chapters/chapter-07.html) | 完成首次模型推理 | 可读 |
-| [08 · 多大模型，选择什么样的服务器配置](content/chapters/chapter-08.html) | 参数规模、显存与服务器选型 | 可读 |
-| [09 · 笔记本也能跑开源模型，先从Ollama开始](content/chapters/chapter-09.html) | 使用 Ollama 开展本地推理 | 可读 |
-| [10 · 把模型放到云端跑，用Notebook试试CPU和GPU](content/chapters/chapter-10.html) | 在云端 Notebook 中运行模型 | 可读 |
-| [11 · 模型需要资源太多，量化能帮上什么忙？](content/chapters/chapter-11.html) | 量化精度与资源开销 | 可读 |
-| **第四篇　调得好：把通用模型变成场景模型** | | |
-| [12 · 业务素材这么多，怎么变成能训练的数据？](content/chapters/chapter-12.html) | 从业务资料整理训练样本 | 可读 |
-| [13 · 快速用ms-swift，完成开源模型的轻量微调](content/chapters/chapter-13.html) | 使用 ms-swift 开展轻量微调 | 可读 |
-| [14 · 模型已经会回答了，为什么还要做偏好对齐？](content/chapters/chapter-14.html) | 理解偏好对齐的目标与方法 | 可读 |
-| [15 · 微调有没有用，测才知道？](content/chapters/chapter-15.html) | 对比微调前后的模型效果 | 可读 |
-| **第五篇　场景篇：从模型走向完整业务系统** | | |
-| [16 · AI健身教练：跟着视频练，让AI指出动作不标准的地方](content/chapters/chapter-16.html) | 人体关键点与动作对比 | 可读 |
-| [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.html) | 通话转写与服务质量分析 | 可读 |
-| [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.html) | 串联语音识别、问答与合成 | 可读 |
-| [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.html) | 知识库检索与 RAG 问答 | 可读 |
-| **第六篇　AIGC特別篇** | | |
-| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.html) | 开源生成模型的应用案例 | 可读 |
-| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.html) | 使用 DiffSynth 定制图像 LoRA | 可读 |
-| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.html) | 商品图生成与编辑 | 可读 |
-| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.html) | MiniMax H3 部署教程待更新 | 待更新 |
-| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.html) | 图像与视频生成基础 | 可读 |
-| **第七篇　Agent特别篇** | | |
-| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.html) | 连接模型与外部工具 | 可读 |
-| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.html) | 组织可复用的任务方法 | 可读 |
-| [27 · 快速使用Claude code](content/chapters/chapter-27.html) | Claude Code 入门 | 可读 |
-| [28 · 快速使用PI](content/chapters/chapter-28.html) | PI 入门 | 可读 |
-| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.html) | DeepSeek Harness 入门 | 可读 |
-| [30 · 补充：Agent框架知识](content/chapters/chapter-30.html) | Agent 框架基础 | 可读 |
-| **第八篇 补充内容** | | |
-| [31 · 补充：大模型基础知识](content/chapters/chapter-31.html) | 模型结构、训练、推理与局限 | 可读 |
-
-**内容快照：2026 年 9 月 15 日。** 第 23 章保留原稿中 MiniMax H3 部署教程即将更新的说明，单独标记为“待更新”，当前尚未提供完整视频教程。
-
-当前快照包含 347 处正文图片引用、12 个附件链接及 12 个嵌入表格的实际内容。后续更新需明确核对，网站不会自动拉取创作工作区的改动。详见[章节维护说明](content/README.md)与[同步校验记录](content/sync-report.json)。
+| 章节 | 关键内容 |
+| --- | --- |
+| **第一篇　认识开源模型** | |
+| [01 · 开源模型正在改变什么](content/chapters/chapter-01.md) | 开放程度、能力边界与许可证 |
+| [02 · 开源模型还没用上，先卡在下载这一步？](content/chapters/chapter-02.md) | 模型库检索、模型卡与下载方式 |
+| [03 · 数据，是你要做开源模型微调的基石](content/chapters/chapter-03.md) | 数据来源、质量与微调准备 |
+| [04 · 没有资源也能玩开源模型，因为这里资源免费](content/chapters/chapter-04.md) | 模型与算力资源入口 |
+| **第二篇　从问题出发：找到适合场景的开源模型** | |
+| [05 · 要把业务问题转换成模型任务问题](content/chapters/chapter-05.md) | 任务定义、输入输出与评估标准 |
+| [06 · 先评再选：用EvalScope形成开源模型的第一份报告](content/chapters/chapter-06.md) | 使用 EvalScope 建立选型基线 |
+| **第三篇　跑得起：让第一个开源模型工作起来** | |
+| [07 · 30分钟带你快速看到第一个结果](content/chapters/chapter-07.md) | 完成首次模型推理 |
+| [08 · 多大模型，选择什么样的服务器配置](content/chapters/chapter-08.md) | 参数规模、显存与服务器选型 |
+| [09 · 笔记本也能跑开源模型，先从Ollama开始](content/chapters/chapter-09.md) | 使用 Ollama 开展本地推理 |
+| [10 · 把模型放到云端跑，用Notebook试试CPU和GPU](content/chapters/chapter-10.md) | 在云端 Notebook 中运行模型 |
+| [11 · 模型需要资源太多，量化能帮上什么忙？](content/chapters/chapter-11.md) | 量化精度与资源开销 |
+| **第四篇　调得好：把通用模型变成场景模型** | |
+| [12 · 业务素材这么多，怎么变成能训练的数据？](content/chapters/chapter-12.md) | 从业务资料整理训练样本 |
+| [13 · 快速用ms-swift，完成开源模型的轻量微调](content/chapters/chapter-13.md) | 使用 ms-swift 开展轻量微调 |
+| [14 · 模型已经会回答了，为什么还要做偏好对齐？](content/chapters/chapter-14.md) | 理解偏好对齐的目标与方法 |
+| [15 · 微调有没有用，测才知道？](content/chapters/chapter-15.md) | 对比微调前后的模型效果 |
+| **第五篇　场景篇：从模型走向完整业务系统** | |
+| [16 · AI健身教练：跟着视频练，让AI指出动作不标准的地方](content/chapters/chapter-16.md) | 人体关键点与动作对比 |
+| [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.md) | 通话转写与服务质量分析 |
+| [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.md) | 串联语音识别、问答与合成 |
+| [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.md) | 知识库检索与 RAG 问答 |
+| **第六篇　AIGC特別篇** | |
+| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.md) | 开源生成模型的应用案例 |
+| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.md) | 使用 DiffSynth 定制图像 LoRA |
+| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.md) | 商品图生成与编辑 |
+| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.md) | MiniMax H3 部署教程待更新 |
+| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.md) | 图像与视频生成基础 |
+| **第七篇　Agent特别篇** | |
+| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.md) | 连接模型与外部工具 |
+| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.md) | 组织可复用的任务方法 |
+| [27 · 快速使用Claude code](content/chapters/chapter-27.md) | Claude Code 入门 |
+| [28 · 快速使用PI](content/chapters/chapter-28.md) | PI 入门 |
+| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.md) | DeepSeek Harness 入门 |
+| [30 · 补充：Agent框架知识](content/chapters/chapter-30.md) | Agent 框架基础 |
+| **第八篇 补充内容** | |
+| [31 · 补充：大模型基础知识](content/chapters/chapter-31.md) | 模型结构、训练、推理与局限 |
 
 ## 场景实践
 
 | 应用案例 | 探索的实现流程 | 章节 |
 | --- | --- | --- |
-| AI 健身教练 | 识别人体关键点，对比跟练动作与示范 | [16](content/chapters/chapter-16.html) |
-| 智能客服质检 | 从通话录音到文字转写与服务分析 | [17](content/chapters/chapter-17.html) |
-| 语音助手 | 串联语音识别、模型问答与语音合成 | [18](content/chapters/chapter-18.html) |
-| 企业知识问答 | 检索知识库，为回答提供参考依据 | [19](content/chapters/chapter-19.html) |
-| 商品营销图 | 完成商品图像生成与编辑 | [22](content/chapters/chapter-22.html) |
+| AI 健身教练 | 识别人体关键点，对比跟练动作与示范 | [16](content/chapters/chapter-16.md) |
+| 智能客服质检 | 从通话录音到文字转写与服务分析 | [17](content/chapters/chapter-17.md) |
+| 语音助手 | 串联语音识别、模型问答与语音合成 | [18](content/chapters/chapter-18.md) |
+| 企业知识问答 | 检索知识库，为回答提供参考依据 | [19](content/chapters/chapter-19.md) |
+| 商品营销图 | 完成商品图像生成与编辑 | [22](content/chapters/chapter-22.md) |
 
 ## 读者社区
 
@@ -163,9 +159,9 @@ python3 -m http.server 4173 --bind 127.0.0.1
 
 ### 致谢
 
-感谢 [freestylefly](https://github.com/freestylefly)、[yingdachen](https://github.com/yingdachen)、[liucongg](https://github.com/liucongg)，以及每一位帮助项目改进的共建者。以上链接依据仓库公开贡献记录整理；完整内容作者与审校署名将在确认后补充。[查看全部贡献记录 →](https://github.com/modelscope/ms-cookbook/graphs/contributors)
+感谢 [freestylefly](https://github.com/freestylefly)、[yingdachen](https://github.com/yingdachen)、[liucongg](https://github.com/liucongg)，以及每一位帮助项目改进的共建者。[查看全部贡献记录 →](https://github.com/modelscope/ms-cookbook/graphs/contributors)
 
-README 的组织方式参考了 [Datawhale Hello-Agents](https://github.com/datawhalechina/hello-agents)。本项目保留魔搭紫皮书自己的章节内容、视觉标识与社区资源。
+感谢 [Datawhale Hello-Agents](https://github.com/datawhalechina/hello-agents) 提供 README 组织参考。
 
 ## 维护说明
 
@@ -174,7 +170,8 @@ README 的组织方式参考了 [Datawhale Hello-Agents](https://github.com/data
 
 ### 内容维护位置
 
-- `content/chapters/`：可审阅的章节 HTML 源文件。
+- `content/chapters/`：供 GitHub 阅读的 Markdown 章节，构建时自动生成。
+- `content/source-html/`：保留原稿结构的 HTML 构建源文件，正文修改在此完成。
 - `content/manifest.json`：篇章标题、顺序、状态与快照日期。
 - `content/sync-report.json`：导入时的原稿版本与校验证据。
 - `assets/content.js`：网站加载的生成数据。
@@ -208,5 +205,3 @@ node scripts/check-site.mjs
 本仓库采用 [Apache License 2.0](LICENSE)。书中引用的模型、数据集与工具适用各自的许可证及使用条款；正文图片和附件的权利归原作者或相应权利人所有。
 
 第三方组件保留各自许可证：[KaTeX · MIT](assets/katex/LICENSE)、[Remix Icon · Apache 2.0](assets/home/REMIX-LICENSE)、[Noto Serif SC · SIL OFL 1.1](assets/home/NOTO-LICENSE.txt)、[搭搭 · MIT](assets/dada/LICENSE)。详见[搭搭来源声明](assets/dada/NOTICE.md)、[网站素材说明](assets/paper/ATTRIBUTION.txt)、[共用素材说明](assets/home/ATTRIBUTION.txt)与[插画说明](assets/review/ATTRIBUTION.md)。
-
-<p align="center"><strong>一起学习，一起实践，把经验分享给下一位开发者。</strong></p>

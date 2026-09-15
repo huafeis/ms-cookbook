@@ -11,6 +11,8 @@ on:
       - 'chapters/**'
       - 'CONTRIBUTING.md'
       - 'scripts/build-content.py'
+      - 'scripts/chapter_markdown.py'
+      - 'scripts/test_chapter_markdown.py'
       - 'scripts/build-content.mjs'
       - 'scripts/check-site.mjs'
       - 'README*.md'
@@ -42,6 +44,7 @@ jobs:
           node-version: '22'
       - name: Verify chapter data and local resources
         run: |
+          python3 scripts/test_chapter_markdown.py
           node scripts/build-content.mjs --check
           node scripts/check-site.mjs
       - name: Sync and deploy the website

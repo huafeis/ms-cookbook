@@ -15,6 +15,6 @@ python3 -m http.server 4173 --bind 127.0.0.1
 公式使用随网站打包的 KaTeX 渲染，正文图片和附件均保存在本地。
 
 建议使用上述 HTTP 方式预览。使用 node scripts/check-site.mjs 校验正文资源与本地链接。
-本版为内容快照，后续原稿改动需明确同步。章节源文件位于 content/chapters/，修改后运行 python3 scripts/build-content.py 生成站点数据。
+本版为内容快照，后续原稿改动需明确同步。GitHub 阅读版位于 content/chapters/*.md；构建源文件位于 content/source-html/*.html，修改后运行 python3 scripts/build-content.py 同时生成 Markdown 和站点数据。
 GitHub、魔搭开发者实践及其他外部链接需要联网。社区投稿方式见 CONTRIBUTING.md。
 保留原有紫色视觉设计，页面背景已移除纸飞机，搭搭素材及其许可位于 assets/dada/。本次素材说明见 assets/review/ATTRIBUTION.md。

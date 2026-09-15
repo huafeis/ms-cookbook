@@ -83,6 +83,9 @@ try {
   // The legacy chapter sources moved to content/; publish their migration guide.
   const oldChapters = join(target, 'chapters');
   if (existsSync(oldChapters)) rmSync(oldChapters, { recursive: true });
+  // Mirror chapter moves and deletions from GitHub in this temporary clone.
+  const oldContent = join(target, 'content');
+  if (existsSync(oldContent)) rmSync(oldContent, { recursive: true });
   run('tar', ['-xf', archive, '-C', target]);
 
   cpSync(join(target, 'README.md'), join(target, 'README.en.md'));

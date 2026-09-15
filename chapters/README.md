@@ -1,6 +1,6 @@
 # 章节源文件已迁移
 
-当前稿件统一维护在 [content/chapters](../content/chapters/)，编辑说明见 [content/README.md](../content/README.md)。原目录中的 2026-09-14 稿件已由最新原稿替代，旧版本保留在 Git 历史中。
+当前 Markdown 阅读版位于 [content/chapters](../content/chapters/)，构建源文件位于 [content/source-html](../content/source-html/)，编辑说明见 [content/README.md](../content/README.md)。旧版本保留在 Git 历史中。
 
 兼容命令：
 

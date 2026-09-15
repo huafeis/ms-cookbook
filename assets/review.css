@@ -40,8 +40,6 @@
 .community-credits{background:#fbfaff}
 .community-credits>img{object-fit:contain;mix-blend-mode:multiply}
 .community-credits a{color:var(--purple)}
-.sidebar-foot>img{width:105px;height:105px;object-fit:contain;mix-blend-mode:multiply}
-.sidebar-foot>a{display:block;line-height:2}
 .reader-community{padding-top:25px;text-align:center;font-size:14px;color:var(--purple)}
 .article,.article-body,.reader{min-width:0}
 .article-body{overflow-wrap:anywhere}

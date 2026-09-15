@@ -56,7 +56,20 @@ try {
   const info = await api(`/studios/${studio}`);
   if (info.sdk_type && info.sdk_type !== 'static') throw new Error('The target Studio must use the static SDK.');
   console.log(`Publishing GitHub commit ${commit} to ${studio}`);
-  run('git', ['clone', '--single-branch', '--branch', 'master', `${endpoint}/studios/${studio}.git`, target]);
+  // Deploy on top of the current Studio commit; older history is not needed.
+  // Retry interrupted downloads only, leaving authentication failures explicit.
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      run('git', ['-c', 'http.version=HTTP/1.1', 'clone', '--depth', '1', '--no-tags', '--single-branch', '--branch', 'master', `${endpoint}/studios/${studio}.git`, target]);
+      break;
+    } catch (error) {
+      if (attempt === 3 || !/early EOF|RPC failed|unexpected disconnect|timed out|ETIMEDOUT|Could not resolve host|Failed to connect/i.test(error.message)) throw error;
+      console.log(`Studio download interrupted; retrying (${attempt}/2).`);
+      // Only remove the incomplete clone created inside this run's temp directory.
+      if (existsSync(target)) rmSync(target, { recursive: true });
+      await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+    }
+  }
   run('git', ['config', 'user.name', 'ms-cookbook deployment'], target);
   run('git', ['config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com'], target);
 

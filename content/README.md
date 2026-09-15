@@ -23,3 +23,5 @@ python3 -m http.server 4174 --bind 127.0.0.1
 原稿中的空标题仍保留在源文件中，网站目录会跳过无文字的条目。第 23 章当前保留原稿的待更新说明。嵌入表格的实际单元格内容随正文提供，图片与附件使用本地相对路径。
 
 完整参与方式见 [贡献指南](../CONTRIBUTING.md)。
+
+旧的 `chapters/` 稿件已迁移到本目录，Git 历史保留原版本。`node scripts/build-content.mjs` 继续作为兼容入口调用同一个 Python 构建器；加上 `--check` 可只校验、不写文件。构建需要 Python 3。

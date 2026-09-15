@@ -61,12 +61,15 @@ try {
   run('git', ['config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com'], target);
 
   // Export committed files only. Deployment scripts and credentials stay out of the site.
-  const files = ['index.html', 'favicon.svg', 'assets', 'content', 'CONTRIBUTING.md', 'README.md', 'README.zh-CN.md', 'LICENSE'];
+  const files = ['index.html', 'favicon.svg', 'assets', 'content', 'chapters', 'CONTRIBUTING.md', 'README.md', 'README.zh-CN.md', 'LICENSE'];
   const archive = join(temporary, 'site.tar');
   run('git', ['archive', '--format=tar', '--output', archive, commit, '--', ...files]);
   // Replace the application-owned asset directory to remove obsolete images on updates.
   const oldAssets = join(target, 'assets');
   if (existsSync(oldAssets)) rmSync(oldAssets, { recursive: true });
+  // The legacy chapter sources moved to content/; publish their migration guide.
+  const oldChapters = join(target, 'chapters');
+  if (existsSync(oldChapters)) rmSync(oldChapters, { recursive: true });
   run('tar', ['-xf', archive, '-C', target]);
 
   cpSync(join(target, 'README.md'), join(target, 'README.en.md'));

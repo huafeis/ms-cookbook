@@ -161,7 +161,7 @@ def import_snapshot(snapshot, date):
     (CONTENT / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')
     (CONTENT / 'sync-report.json').write_text(json.dumps({'syncedAt': date, 'method': 'Feishu XML and embedded sheet values; no prose rewriting', 'chapters': reports}, ensure_ascii=False, indent=2) + '\n')
 
-def build():
+def build(check=False):
     manifest = json.loads((CONTENT / 'manifest.json').read_text())
     chapters = []
     for entry in manifest['chapters']:
@@ -198,16 +198,25 @@ def build():
     payload.update(sourceUrl=f'{REPO}/tree/main/content', chapterCount=len(chapters), readyCount=sum(c['status']=='ready' for c in chapters), imageCount=sum(c['imageCount'] for c in chapters), attachmentCount=sum(c['attachmentCount'] for c in chapters))
     payload['parts'] = [{'id': f'part-{i+1:02d}', **p, 'chapters': [f'chapter-{c["number"]}' for c in manifest['chapters'] if c['partIndex']==i]} for i,p in enumerate(manifest['parts'])]
     payload['chapters'] = chapters
-    (ROOT / 'assets/content.js').write_text('window.BOOK_DATA = ' + json.dumps(payload, ensure_ascii=False, separators=(',', ':')) + ';\n')
-    print(f'Built {len(chapters)} chapters, {payload["imageCount"]} images, {payload["attachmentCount"]} attachments')
+    output = 'window.BOOK_DATA = ' + json.dumps(payload, ensure_ascii=False, separators=(',', ':')) + ';\n'
+    target = ROOT / 'assets/content.js'
+    if check:
+        if not target.exists() or target.read_text() != output:
+            raise SystemExit('assets/content.js is out of date. Run python3 scripts/build-content.py.')
+    else:
+        target.write_text(output)
+    print(f'{"Verified" if check else "Built"} {len(chapters)} chapters, {payload["imageCount"]} images, {payload["attachmentCount"]} attachments')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--snapshot', type=Path)
     parser.add_argument('--date')
+    parser.add_argument('--check', action='store_true', help='Validate generated content without writing files')
     args = parser.parse_args()
+    if args.check and args.snapshot:
+        parser.error('--check cannot be combined with --snapshot')
     if args.snapshot:
         if not args.date:
             parser.error('--date is required with --snapshot')
         import_snapshot(args.snapshot.resolve(), args.date)
-    build()
+    build(check=args.check)

@@ -23,6 +23,8 @@ Visit [ModelScope Developer Practices](https://modelscope.cn/spotlight), select 
 
 ## Community and credits
 
+Maintain the two community QR images in `assets/community/qr.png` and `assets/community/agentwork-qr.png`. Preserve their scan quality and verify both desktop and mobile presentation after replacement.
+
 The website's **社区共建** page provides the community QR code, submission routes, and verified code contributor links. Author and reviewer credits are added after names and roles are confirmed.
 
 AIGC contribution directions include image and brand LoRA, image editing, video consistency and workflows, audio and music generation, and evaluation. These are open contribution directions; availability of completed chapters is shown in the book index.
@@ -36,3 +38,5 @@ AIGC contribution directions include image and brand LoRA, image editing, video 
 请保持原稿内容、标题层级与段落顺序，正文勘误需附依据或作者确认。界面修复与内容编辑分开提交。配图、代码、公式及附件均需核对，禁止提交密钥、密码或隐私信息。
 
 也可前往[魔搭开发者实践](https://modelscope.cn/spotlight)，选择「创建内容」，添加专题 **#魔搭紫皮书** 后投稿。署名与审校角色确认后再进入贡献者目录。
+
+场景案例请提供任务与目标用户、运行环境、可复现步骤、效果验证与局限。MCP、Skill、LoRA 等通用技术教程归入对应阅读路径，案例可引用这些技术。

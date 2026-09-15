@@ -8,8 +8,10 @@ on:
       - 'favicon.svg'
       - 'assets/**'
       - 'content/**'
+      - 'chapters/**'
       - 'CONTRIBUTING.md'
       - 'scripts/build-content.py'
+      - 'scripts/build-content.mjs'
       - 'scripts/check-site.mjs'
       - 'README*.md'
       - 'LICENSE'
@@ -40,8 +42,7 @@ jobs:
           node-version: '22'
       - name: Verify chapter data and local resources
         run: |
-          python3 scripts/build-content.py
-          git diff --exit-code -- assets/content.js
+          node scripts/build-content.mjs --check
           node scripts/check-site.mjs
       - name: Sync and deploy the website
         env:

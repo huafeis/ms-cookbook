@@ -172,6 +172,8 @@
     updateActiveHeading();
   }
   function route() {
+    // Preserve community links published before the route was named contribute.
+    if(location.hash==='#community')history.replaceState(null,'','#contribute');
     const [name='home',sub='']=location.hash.slice(1).split('/');
     const chapter=chapters.get(name);
     const view=chapter?'reader':['contents','paths','practice','contribute'].includes(name)?name:'home';

@@ -7,41 +7,6 @@
 .landing-footer::before,.quiet-footer::before{background-image:url('review/sky-no-plane.webp')}
 .path-cards{grid-template-columns:repeat(4,minmax(0,1fr))}
 .path-cards article{padding-inline:15px}
-/* Keep content centered while the desktop illustration spans the full viewport. */
-@media(min-width:901px){
-  body[data-view=home]{
-    --home-content-width:min(1440px,calc(100% - 96px));
-    --home-art-top:clamp(580px,42svh,660px);
-    --home-hero-height:clamp(920px,calc(var(--home-art-top) + 27vw),1680px);
-  }
-  body[data-view=home] .app-header{
-    width:var(--home-content-width);margin-inline:auto;padding-inline:0;
-  }
-  #homePage .container{width:var(--home-content-width)}
-  #homePage .landing-hero{
-    min-height:var(--home-hero-height);max-height:none;overflow:hidden;
-    padding-top:clamp(104px,10svh,144px);
-    background:linear-gradient(180deg,transparent 60%,#fff 98%),linear-gradient(115deg,#c4c2fc,#c8ddfc 48%,#b7e8f8);
-  }
-  #homePage .landing-hero::before{
-    content:"";position:absolute;inset:calc(var(--home-art-top) - 42vw) 0 auto;
-    width:100%;aspect-ratio:4/3;z-index:-1;
-    background:url('review/hero-no-plane.webp') center / 100% 100% no-repeat;
-    -webkit-mask-image:linear-gradient(180deg,transparent,#000 12%,#000 92%,transparent);
-    mask-image:linear-gradient(180deg,transparent,#000 12%,#000 92%,transparent);
-    pointer-events:none;
-  }
-  #homePage .landing-copy{max-width:980px;margin-inline:auto;padding-top:0}
-  #homePage .eyebrow{font-size:14px;margin-bottom:22px}
-  #homePage .landing-copy h1{font-size:clamp(56px,4.5vw,86px);line-height:1.25;margin-bottom:18px}
-  #homePage .hero-description{font-size:19px}
-  #homePage .hero-actions{margin-top:26px}
-  #homePage .book-counts{margin-top:18px;font-size:15px}
-  #homePage .hero-labels{position:absolute;inset:0;width:100%;pointer-events:none}
-  #homePage .landing-paths{margin-top:0;padding-top:12px}
-  #homePage .landing-paths h2{font-size:36px}
-  #homePage .path-cards{margin-top:24px}
-}
 .path-tabs{width:700px}
 .path-alternatives{grid-template-columns:repeat(3,minmax(0,1fr))}
 .home-community{display:flex;align-items:center;gap:26px;border-top:1px solid var(--rule);padding-block:32px;margin-top:22px}

@@ -5,4 +5,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . ./
 ENV DATA_DIR=/mnt/workspace/purplebook
 EXPOSE 7860
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860", "--no-access-log"]
+ENTRYPOINT ["python", "-u", "-m", "uvicorn", "app:app", "--app-dir", "/app", "--host", "0.0.0.0", "--port", "7860", "--no-access-log"]

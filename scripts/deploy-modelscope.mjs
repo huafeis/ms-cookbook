@@ -94,7 +94,7 @@ try {
   const metadata = [
     '---', 'license: Apache License 2.0', 'language:', '- zh',
     'tags:', '- modelscope', '- cookbook', '- open-source-ai',
-    'deployspec:', '  entry_file: Dockerfile', '---', '',
+    '---', '',
   ].join('\n');
   writeFileSync(join(target, 'README.md'), metadata + chinese);
   writeFileSync(join(target, 'deployment.json'), JSON.stringify({

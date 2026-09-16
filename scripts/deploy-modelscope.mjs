@@ -54,7 +54,7 @@ async function api(path, method = 'GET') {
 try {
   const commit = run('git', ['rev-parse', 'HEAD']);
   const info = await api(`/studios/${studio}`);
-  if (info.sdk_type && info.sdk_type !== 'static') throw new Error('The target Studio must use the static SDK.');
+  if (info.sdk_type && info.sdk_type !== 'docker') throw new Error('The target Studio must use Docker with OAuth enabled before deploying this version.');
   console.log(`Publishing GitHub commit ${commit} to ${studio}`);
   // Deploy on top of the current Studio commit; older history is not needed.
   // Retry interrupted downloads only, leaving authentication failures explicit.
@@ -74,7 +74,7 @@ try {
   run('git', ['config', 'user.email', '41898282+github-actions[bot]@users.noreply.github.com'], target);
 
   // Export committed files only. Deployment scripts and credentials stay out of the site.
-  const files = ['index.html', 'favicon.svg', 'assets', 'content', 'chapters', 'CONTRIBUTING.md', 'README.md', 'README.zh-CN.md', 'LICENSE'];
+  const files = ['Dockerfile', 'requirements.txt', 'app.py', 'index.html', 'favicon.svg', 'assets', 'content', 'chapters', 'CONTRIBUTING.md', 'README.md', 'README.zh-CN.md', 'LICENSE'];
   const archive = join(temporary, 'site.tar');
   run('git', ['archive', '--format=tar', '--output', archive, commit, '--', ...files]);
   // Replace the application-owned asset directory to remove obsolete images on updates.
@@ -94,7 +94,7 @@ try {
   const metadata = [
     '---', 'license: Apache License 2.0', 'language:', '- zh',
     'tags:', '- modelscope', '- cookbook', '- open-source-ai',
-    'deployspec:', '  entry_file: index.html', '---', '',
+    'deployspec:', '  entry_file: Dockerfile', '---', '',
   ].join('\n');
   writeFileSync(join(target, 'README.md'), metadata + chinese);
   writeFileSync(join(target, 'deployment.json'), JSON.stringify({

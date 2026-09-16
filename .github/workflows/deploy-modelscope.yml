@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
     paths:
+      - 'app.py'
+      - 'requirements.txt'
+      - 'Dockerfile'
+      - 'tests/**'
       - 'index.html'
       - 'favicon.svg'
       - 'assets/**'
@@ -42,6 +46,11 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      - name: Verify reading community API
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install -r requirements.txt pytest
+          .venv/bin/python -m pytest tests -q
       - name: Verify chapter data and local resources
         run: |
           python3 scripts/test_chapter_markdown.py

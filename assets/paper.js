@@ -9,7 +9,7 @@
   const partNames = data.parts.map(p => p.shortTitle || p.title);
   $$('.book-counts').forEach(el => { el.textContent = `${data.parts.length} 篇主题 · ${data.chapterCount} 个章节 · ${data.imageCount} 张图`; });
   $('.banner-counts').textContent = `${data.parts.length} 篇主题 · ${data.chapterCount} 个章节`;
-  $('#sourceStatus').textContent = `${data.sourceUpdated} 内容快照 · ${data.readyCount} 章可读 · ${data.chapterCount-data.readyCount} 章待补充`;
+  $('#sourceStatus').textContent = `${data.readyCount} 章可读 · ${data.chapterCount-data.readyCount} 章待补充`;
   const projectLinks = '<a href="https://github.com/modelscope/ms-cookbook" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://modelscope.cn/spotlight" target="_blank" rel="noopener noreferrer">魔搭开发者实践 ↗</a><a href="#contribute">社区共建</a><a href="https://github.com/NovaWang97/dada-illustrations" target="_blank" rel="noopener noreferrer">搭搭素材 · Dada ↗</a>';
   $$('.project-links').forEach(el=>{el.innerHTML=projectLinks;});
   $$('.quiet-footer').forEach(el=>{el.insertAdjacentHTML('beforeend',`<div class="project-links">${projectLinks}</div>`);});

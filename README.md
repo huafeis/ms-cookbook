@@ -34,7 +34,7 @@ A useful model application starts with practical decisions: which model fits the
 
 The goal is to help developers move from a first successful inference to applications they can reproduce, evaluate, and improve. Examples cover enterprise knowledge Q&A, speech assistants, customer-service quality analysis, fitness coaching, and product-image creation.
 
-> **8 parts · 31 chapters · 30 available to read**
+> **8 parts · 34 chapters · 33 available to read**
 
 ## Start reading
 
@@ -60,8 +60,8 @@ Reading locally requires Python 3 and a modern browser; it requires no project d
 | --- | --- | --- |
 | **Get started** | [01](content/chapters/chapter-01.md) → [05](content/chapters/chapter-05.md) → [07](content/chapters/chapter-07.md) | Understand models, define a task, and run a first inference |
 | **Adapt a model** | [12](content/chapters/chapter-12.md) → [13](content/chapters/chapter-13.md) → [15](content/chapters/chapter-15.md) | Prepare training data, fine-tune, and evaluate against a baseline |
-| **Build an application** | [19](content/chapters/chapter-19.md) → [25](content/chapters/chapter-25.md) → [26](content/chapters/chapter-26.md) | Combine knowledge retrieval, external tools, and reusable skills |
-| **Create with generative AI** | [20](content/chapters/chapter-20.md) → [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [24](content/chapters/chapter-24.md) | Explore examples, customize image LoRA, create product visuals, and study the foundations |
+| **Build an application** | [19](content/chapters/chapter-19.md) → [27](content/chapters/chapter-27.md) → [28](content/chapters/chapter-28.md) | Combine knowledge retrieval, external tools, and reusable skills |
+| **Create with generative AI** | [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [23](content/chapters/chapter-23.md) → [25](content/chapters/chapter-25.md) | Explore examples, customize image LoRA, create product visuals, and study the foundations |
 
 ### Who is this for?
 
@@ -101,21 +101,24 @@ Read each chapter on GitHub, or use the [online reading website](https://modelsc
 | [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.md) | Call transcription and quality analysis |
 | [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.md) | Speech recognition, Q&A, and synthesis |
 | [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.md) | Knowledge retrieval and RAG |
+| [20 · 场景有千千万，欢迎你来共建出你的场景](content/chapters/chapter-20.md) | Invitation to contribute reproducible application tutorials |
 | **Part 6 · Generative AI** | |
-| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.md) | Open generative-model use cases |
-| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.md) | Image LoRA customization with DiffSynth |
-| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.md) | Product-image generation and editing |
-| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.md) | MiniMax H3 deployment tutorial pending |
-| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.md) | Image and video generation fundamentals |
+| [21 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-21.md) | Open generative-model use cases |
+| [22 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-22.md) | Image LoRA customization with DiffSynth |
+| [23 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-23.md) | Product-image generation and editing |
+| [24 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-24.md) | MiniMax H3 deployment tutorial pending |
+| [25 · 补充：AIGC理论知识](content/chapters/chapter-25.md) | Image and video generation fundamentals |
 | **Part 7 · Agents** | |
-| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.md) | Connecting models to external tools |
-| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.md) | Reusable task methods and workflows |
-| [27 · 快速使用Claude code](content/chapters/chapter-27.md) | Getting started with Claude Code |
-| [28 · 快速使用PI](content/chapters/chapter-28.md) | Getting started with PI |
-| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.md) | Getting started with DeepSeek Harness |
-| [30 · 补充：Agent框架知识](content/chapters/chapter-30.md) | Agent framework fundamentals |
+| [26 · Agent是什么，它能做什么事？](content/chapters/chapter-26.md) | Agent components, execution loop, and use cases |
+| [27 · MCP：让模型连接外部工具](content/chapters/chapter-27.md) | Connecting models to external tools |
+| [28 · Skill：把任务方法封装成能力](content/chapters/chapter-28.md) | Reusable task methods and workflows |
+| [29 · 快速使用Claude code](content/chapters/chapter-29.md) | Getting started with Claude Code |
+| [30 · 快速使用PI](content/chapters/chapter-30.md) | Getting started with PI |
+| [31 · 快速使用DeepSeek Harness](content/chapters/chapter-31.md) | Getting started with DeepSeek Harness |
+| [32 · 补充：Agent框架知识](content/chapters/chapter-32.md) | Agent framework fundamentals |
 | **Part 8 · Supplementary fundamentals** | |
-| [31 · 补充：大模型基础知识](content/chapters/chapter-31.md) | Model architecture, training, inference, and limitations |
+| [33 · 补充：大模型基础知识](content/chapters/chapter-33.md) | Model architecture, training, inference, and limitations |
+| [34 · 主流LLM评测](content/chapters/chapter-34.md) | Invitation to contribute evaluations of mainstream models |
 
 ## Application examples
 
@@ -125,7 +128,7 @@ Read each chapter on GitHub, or use the [online reading website](https://modelsc
 | Customer-service quality analysis | Turn call recordings into text and analysis | [17](content/chapters/chapter-17.md) |
 | Speech assistant | Connect speech recognition, model responses, and speech synthesis | [18](content/chapters/chapter-18.md) |
 | Enterprise knowledge assistant | Retrieve reference material for grounded answers | [19](content/chapters/chapter-19.md) |
-| Product marketing visuals | Generate and edit product images | [22](content/chapters/chapter-22.md) |
+| Product marketing visuals | Generate and edit product images | [23](content/chapters/chapter-23.md) |
 
 ## Community
 

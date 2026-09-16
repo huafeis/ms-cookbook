@@ -34,7 +34,7 @@
 
 项目希望帮助读者建立**从任务定义到效果验证的实践能力**：先跑通一个结果，再理解运行条件与方法边界，逐步构建能够复现、评测和改进的应用。书中案例覆盖企业知识问答、语音助手、客服质检、AI 健身教练和商品营销图等场景。
 
-> **8 篇主题 · 31 个章节 · 30 章可读**
+> **8 篇主题 · 34 个章节 · 33 章可读**
 
 ## 开始阅读
 
@@ -60,8 +60,8 @@ python3 -m http.server 4173 --bind 127.0.0.1
 | --- | --- | --- |
 | **从零开始** | [01](content/chapters/chapter-01.md) → [05](content/chapters/chapter-05.md) → [07](content/chapters/chapter-07.md) | 理解模型、定义任务，完成第一次推理 |
 | **深入模型** | [12](content/chapters/chapter-12.md) → [13](content/chapters/chapter-13.md) → [15](content/chapters/chapter-15.md) | 准备训练数据、开展轻量微调，用评测检验效果 |
-| **走向应用** | [19](content/chapters/chapter-19.md) → [25](content/chapters/chapter-25.md) → [26](content/chapters/chapter-26.md) | 连接知识库、外部工具与可复用 Skill |
-| **AIGC 创作** | [20](content/chapters/chapter-20.md) → [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [24](content/chapters/chapter-24.md) | 从案例出发，学习图像 LoRA、商品图创作与理论基础 |
+| **走向应用** | [19](content/chapters/chapter-19.md) → [27](content/chapters/chapter-27.md) → [28](content/chapters/chapter-28.md) | 连接知识库、外部工具与可复用 Skill |
+| **AIGC 创作** | [21](content/chapters/chapter-21.md) → [22](content/chapters/chapter-22.md) → [23](content/chapters/chapter-23.md) → [25](content/chapters/chapter-25.md) | 从案例出发，学习图像 LoRA、商品图创作与理论基础 |
 
 ### 适合谁学？怎么学？
 
@@ -101,21 +101,24 @@ python3 -m http.server 4173 --bind 127.0.0.1
 | [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.md) | 通话转写与服务质量分析 |
 | [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.md) | 串联语音识别、问答与合成 |
 | [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.md) | 知识库检索与 RAG 问答 |
+| [20 · 场景有千千万，欢迎你来共建出你的场景](content/chapters/chapter-20.md) | 可复现业务场景的共建邀请 |
 | **第六篇　AIGC特別篇** | |
-| [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.md) | 开源生成模型的应用案例 |
-| [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.md) | 使用 DiffSynth 定制图像 LoRA |
-| [22 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-22.md) | 商品图生成与编辑 |
-| [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.md) | MiniMax H3 部署教程待更新 |
-| [24 · 补充：AIGC理论知识](content/chapters/chapter-24.md) | 图像与视频生成基础 |
+| [21 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-21.md) | 开源生成模型的应用案例 |
+| [22 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-22.md) | 使用 DiffSynth 定制图像 LoRA |
+| [23 · 一张商品营销图，从生成到修改怎么做？](content/chapters/chapter-23.md) | 商品图生成与编辑 |
+| [24 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-24.md) | MiniMax H3 部署教程待更新 |
+| [25 · 补充：AIGC理论知识](content/chapters/chapter-25.md) | 图像与视频生成基础 |
 | **第七篇　Agent特别篇** | |
-| [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.md) | 连接模型与外部工具 |
-| [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.md) | 组织可复用的任务方法 |
-| [27 · 快速使用Claude code](content/chapters/chapter-27.md) | Claude Code 入门 |
-| [28 · 快速使用PI](content/chapters/chapter-28.md) | PI 入门 |
-| [29 · 快速使用DeepSeek Harness](content/chapters/chapter-29.md) | DeepSeek Harness 入门 |
-| [30 · 补充：Agent框架知识](content/chapters/chapter-30.md) | Agent 框架基础 |
+| [26 · Agent是什么，它能做什么事？](content/chapters/chapter-26.md) | Agent 的组成、执行流程与适用场景 |
+| [27 · MCP：让模型连接外部工具](content/chapters/chapter-27.md) | 连接模型与外部工具 |
+| [28 · Skill：把任务方法封装成能力](content/chapters/chapter-28.md) | 组织可复用的任务方法 |
+| [29 · 快速使用Claude code](content/chapters/chapter-29.md) | Claude Code 入门 |
+| [30 · 快速使用PI](content/chapters/chapter-30.md) | PI 入门 |
+| [31 · 快速使用DeepSeek Harness](content/chapters/chapter-31.md) | DeepSeek Harness 入门 |
+| [32 · 补充：Agent框架知识](content/chapters/chapter-32.md) | Agent 框架基础 |
 | **第八篇 补充内容** | |
-| [31 · 补充：大模型基础知识](content/chapters/chapter-31.md) | 模型结构、训练、推理与局限 |
+| [33 · 补充：大模型基础知识](content/chapters/chapter-33.md) | 模型结构、训练、推理与局限 |
+| [34 · 主流LLM评测](content/chapters/chapter-34.md) | 主流模型评测的共建邀请 |
 
 ## 场景实践
 
@@ -125,7 +128,7 @@ python3 -m http.server 4173 --bind 127.0.0.1
 | 智能客服质检 | 从通话录音到文字转写与服务分析 | [17](content/chapters/chapter-17.md) |
 | 语音助手 | 串联语音识别、模型问答与语音合成 | [18](content/chapters/chapter-18.md) |
 | 企业知识问答 | 检索知识库，为回答提供参考依据 | [19](content/chapters/chapter-19.md) |
-| 商品营销图 | 完成商品图像生成与编辑 | [22](content/chapters/chapter-22.md) |
+| 商品营销图 | 完成商品图像生成与编辑 | [23](content/chapters/chapter-23.md) |
 
 ## 读者社区
 

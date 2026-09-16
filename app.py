@@ -76,7 +76,8 @@ def create_app(data_dir=None):
         provider = 'https://www.modelscope.cn'
         oauth.register(name='modelscope', client_id=os.environ['OAUTH_CLIENT_ID'], client_secret=os.environ['OAUTH_CLIENT_SECRET'], server_metadata_url=provider+'/.well-known/openid-configuration', client_kwargs={'scope':'openid profile'})
     raw = (ROOT / 'assets/content.js').read_text().split('=',1)[1].strip().rstrip(';')
-    chapters = {c['id'] for c in json.loads(raw)['chapters'] if c.get('status') != 'pending'}
+    # Keep notes attached to their original article when display numbers change.
+    chapters = {c['id']: c.get('discussionId', c['id']) for c in json.loads(raw)['chapters'] if c.get('status') != 'pending'}
     admins = set(filter(None, os.getenv('MODERATOR_SUBS','').split(',')))
 
     def user(request):
@@ -96,6 +97,7 @@ def create_app(data_dir=None):
         return u
     def check_chapter(chapter):
         if chapter not in chapters: raise HTTPException(404,'章节不存在或尚未开放')
+        return chapters[chapter]
 
     @app.middleware('http')
     async def response_headers(request, call_next):
@@ -150,20 +152,20 @@ def create_app(data_dir=None):
 
     @app.get('/api/chapters/{chapter}/entries')
     def list_entries(chapter: str, request: Request, before: int = 0):
-        check_chapter(chapter); u=user(request); uid=u['id'] if u else ''
+        storage_chapter=check_chapter(chapter); u=user(request); uid=u['id'] if u else ''
         # Rowid cursor remains stable even when multiple entries share a timestamp.
         with db() as conn:
-            rows=conn.execute('SELECT e.rowid cursor,e.*,u.name FROM entries e JOIN users u ON u.id=e.user_id WHERE e.chapter=? AND (e.kind!=\'highlight\' OR e.user_id=?) AND (?=0 OR e.rowid<?) ORDER BY e.rowid DESC LIMIT 101',(chapter,uid,before,before)).fetchall()
+            rows=conn.execute('SELECT e.rowid cursor,e.*,u.name FROM entries e JOIN users u ON u.id=e.user_id WHERE e.chapter=? AND (e.kind!=\'highlight\' OR e.user_id=?) AND (?=0 OR e.rowid<?) ORDER BY e.rowid DESC LIMIT 101',(storage_chapter,uid,before,before)).fetchall()
         items=[]
         for row in rows[:100]:
-            item=dict(row); item['mine']=item['user_id']==uid
+            item=dict(row); item['chapter']=chapter; item['mine']=item['user_id']==uid
             item['canDelete']=item['mine'] or bool(u and u['sub'] in admins)
             item.pop('user_id'); items.append(item)
         return {'items':items,'next':items[-1]['cursor'] if len(rows)>100 else None}
 
     @app.post('/api/chapters/{chapter}/entries',status_code=201)
     def add_entry(chapter: str, entry: Entry, request: Request):
-        u=require_user(request); check_chapter(chapter)
+        u=require_user(request); chapter=check_chapter(chapter)
         if entry.kind not in ('highlight','annotation','comment'): raise HTTPException(422,'不支持的笔记类型')
         if entry.kind!='highlight' and not entry.text.strip(): raise HTTPException(422,'请填写内容')
         if entry.kind!='comment' and (not entry.quote.strip() or entry.end<=entry.start): raise HTTPException(422,'请先选择正文中的文字')

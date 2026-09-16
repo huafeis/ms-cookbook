@@ -154,7 +154,7 @@ def import_snapshot(snapshot, date):
         # Newlines between top-level blocks make source reviewable without altering inline text/code.
         source_html = '<article>\n' + '\n'.join(xml_dump(n) for n in article) + '\n</article>\n'
         (CONTENT / file).write_text(source_html)
-        status = 'pending' if number == 23 and '敬请期待' in plain(article) and len(plain(article)) < 150 else 'ready'
+        status = 'pending' if '敬请期待' in plain(article) and len(plain(article)) < 150 else 'ready'
         entries.append({'number': number, 'title': c['title'], 'partIndex': c['partIndex'], 'file': file, 'status': status})
         reports.append({'number': number, 'revision': doc['revision_id'], 'sourceXmlSha256': digest(doc['content'].encode()), 'sourceMarkdownSha256': digest(md['content'].encode()), 'chapterFileSha256': digest(source_html.encode()), 'headings': len(expected_headings), 'codeBlocks': len(expected_code), 'formulas': len(expected_math), 'images': len(list(original.iter('img'))), 'attachments': len(list(original.iter('source'))), 'embeddedSheets': sheet_evidence, 'proseVerified': True, 'headingOrderVerified': True, 'codeVerified': True, 'formulasVerified': True})
         print(f'Imported {number:02d}: revision {doc["revision_id"]}; prose, headings, code and math verified')
@@ -203,6 +203,8 @@ def build(check=False):
                     parent.insert(i, wrapper)
         body = '\n'.join(dump(n) for n in article)
         chapters.append({'id': f'chapter-{number}', 'number': number, 'title': entry['title'], 'sourceUrl': f'{REPO}/blob/main/content/chapters/chapter-{number:02d}.md', 'editUrl': f'{REPO}/edit/main/content/{entry["file"]}', 'minutes': max(1, round(len(re.sub(r'\s+', '', plain(article))) / 520)) if entry['status']=='ready' else 0, 'status': entry['status'], 'headings': headings, 'html': body, 'imageCount': len(list(article.iter('img'))), 'attachmentCount': sum(n.get('class') == 'attachment' for n in article.iter('a'))})
+    for chapter, entry in zip(chapters, manifest['chapters']):
+        chapter['discussionId'] = entry.get('discussionId', chapter['id'])
     payload = {k: manifest[k] for k in ('title', 'sourceUpdated')}
     payload.update(sourceUrl=f'{REPO}/tree/main/content', chapterCount=len(chapters), readyCount=sum(c['status']=='ready' for c in chapters), imageCount=sum(c['imageCount'] for c in chapters), attachmentCount=sum(c['attachmentCount'] for c in chapters))
     payload['parts'] = [{'id': f'part-{i+1:02d}', **p, 'chapters': [f'chapter-{c["number"]}' for c in manifest['chapters'] if c['partIndex']==i]} for i,p in enumerate(manifest['parts'])]

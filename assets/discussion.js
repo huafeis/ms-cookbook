@@ -6,7 +6,7 @@
   const account=el('div',null,'reading-account');
   $('#headerAccountArea').append(account);
   const panel=el('section',null,'chapter-discussion'); panel.id='chapterDiscussion'; panel.setAttribute('aria-label','本章笔记与留言');
-  $('#articleBody').after(panel);
+  $('.chapter-pager').after(panel);
   const title=el('h2','一起读这一章');
   const hint=el('p','选择正文中的一段文字，可以划线或写下想法。','discussion-hint');
   const tabs=el('div',null,'discussion-tabs');

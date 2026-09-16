@@ -15,15 +15,15 @@
   const paths = {
     beginner: {name:'从零开始',title:'从零开始，跑通第一个模型',art:'seedling',desc:'适合刚接触开源模型的读者。从理解模型，到选择任务，再到看到第一个结果。',brief:'建立基础认知，快速上手实践。',steps:'认识 → 选型 → 运行',link:'开始这条路径',chapters:[1,5,7],labels:['建立基础认知','找到业务任务','跑通第一个示例'],notes:['理解开源模型与使用边界','明确输入、输出与评估方式','完成一次模型运行']},
     model: {name:'深入模型',title:'深入模型，把通用能力变成场景能力',art:'mountain',desc:'适合已经跑通过模型的开发者。从业务数据准备开始，完成轻量微调，并用评测检验模型效果。',brief:'掌握核心技术，提升实践能力。',steps:'数据 → 微调 → 评测',link:'探索核心内容',chapters:[12,13,15],labels:['准备训练数据','完成轻量微调','验证模型效果'],notes:['将业务知识整理成训练样本','用 ms-swift 完成模型训练','比较基线与微调后的表现']},
-    application: {name:'走向应用',title:'带着真实任务，探索模型的应用方式',art:'cubes',desc:'从企业知识问答到 MCP 与 Skill。结合任务选择章节，理解模型与工具怎样协同工作。',brief:'将模型能力转化为实际价值。',steps:'知识问答 → 工具 → Agent',link:'查看应用实践',chapters:[19,25,26],labels:['知识问答','连接工具','封装能力'],notes:['结合知识库生成有依据的回答','通过 MCP 连接外部工具','用 Skill 组织可复用的任务方法']},
-    aigc: {name:'AIGC 创作',title:'从生成到定制，探索 AIGC 创作',art:'palette',desc:'面向创作者与 AIGC 实践者。从开源生成模型的案例出发，学习图像 LoRA 定制、商品营销图创作，再补充生成模型的理论知识。',brief:'理解生成能力，跑通创作流程。',steps:'案例 → 定制 → 图像创作',link:'开始 AIGC 创作',chapters:[20,21,22,24],labels:['认识生成能力','定制图像 LoRA','创作商品营销图','补充理论基础'],notes:['通过现有案例了解开源模型的创作能力','使用 DiffSynth 训练图像 LoRA','完成图像生成与修改流程','理解 AIGC 相关理论知识']}
+    application: {name:'走向应用',title:'带着真实任务，探索模型的应用方式',art:'cubes',desc:'从企业知识问答到 MCP 与 Skill。结合任务选择章节，理解模型与工具怎样协同工作。',brief:'将模型能力转化为实际价值。',steps:'知识问答 → 工具 → Agent',link:'查看应用实践',chapters:[19,27,28],labels:['知识问答','连接工具','封装能力'],notes:['结合知识库生成有依据的回答','通过 MCP 连接外部工具','用 Skill 组织可复用的任务方法']},
+    aigc: {name:'AIGC 创作',title:'从生成到定制，探索 AIGC 创作',art:'palette',desc:'面向创作者与 AIGC 实践者。从开源生成模型的案例出发，学习图像 LoRA 定制、商品营销图创作，再补充生成模型的理论知识。',brief:'理解生成能力，跑通创作流程。',steps:'案例 → 定制 → 图像创作',link:'开始 AIGC 创作',chapters:[21,22,23,25],labels:['认识生成能力','定制图像 LoRA','创作商品营销图','补充理论基础'],notes:['通过现有案例了解开源模型的创作能力','使用 DiffSynth 训练图像 LoRA','完成图像生成与修改流程','理解 AIGC 相关理论知识']}
   };
   const scenes = [
     {id:16,title:'AI 健身教练',desc:'识别人体关键点，对比跟练动作与示范。',type:'视觉',art:'fitness'},
     {id:17,title:'智能客服质检',desc:'从通话转写到服务过程分析。',type:'语音分析',art:'service'},
     {id:18,title:'能听也能说的语音助手',desc:'串联语音识别、模型问答与语音合成。',type:'语音',art:'speech'},
     {id:19,title:'企业知识问答助手',desc:'结合知识库，让回答有据可查。',type:'RAG',art:'knowledge'},
-    {id:22,title:'商品营销图',desc:'从图像生成到修改，完成商品视觉创作。',type:'AIGC',art:'product'}
+    {id:23,title:'商品营销图',desc:'从图像生成到修改，完成商品视觉创作。',type:'AIGC',art:'product'}
   ];
   let currentChapter = null;
   let currentView = '';
@@ -102,7 +102,7 @@
     let results,total;
     if(query) ({results,total}=window.BookSearch.search(bookSearchDocuments,query));
     else {
-      const ids=[...new Set([currentChapter?.id,'chapter-1','chapter-13','chapter-19','chapter-21','chapter-25'])];
+      const ids=[...new Set([currentChapter?.id,'chapter-1','chapter-13','chapter-19','chapter-22','chapter-27'])];
       results=ids.map(id=>bookSearchDocuments.find(d=>d.chapterId===id&&!d.headingId)).filter(Boolean);
     }
     $('#bookSearchStatus').textContent=query?(total?`找到 ${total} 处匹配${total>results.length?`，显示前 ${results.length} 条；可添加关键词缩小范围`:''}`:'没有找到匹配内容'):'输入关键词搜索全书，或直接打开以下章节';

@@ -11,6 +11,8 @@ const data=context.window.BOOK_DATA;
 const manifest=JSON.parse(read('content/manifest.json'));
 assert.equal(data.chapters.length,manifest.chapters.length);
 assert.equal(new Set(data.chapters.map(c=>c.id)).size,data.chapterCount);
+assert.deepEqual(manifest.chapters.map(c=>c.number),Array.from({length:data.chapterCount},(_,i)=>i+1),'Chapter numbers must follow book order');
+assert.equal(new Set(data.chapters.map(c=>c.discussionId)).size,data.chapterCount,'Discussion storage keys must be unique');
 const ids=new Set(data.chapters.map(c=>c.id));
 const partIds=data.parts.flatMap(p=>p.chapters);
 assert.equal(partIds.length,ids.size);

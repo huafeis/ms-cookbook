@@ -1,176 +1,153 @@
 <article>
-<h1>快速使用DeepSeek Harness</h1>
-<p>DeepSeek 在2026年8月13号开源了他们的第一个 Agent 产品：DeepSeek Harness。</p>
-<p>这 Star 涨得快的离谱。我记得，我记得，仅仅一天就涨到了 <b>64.2k Star</b>，写这篇的时候已经221K Star了。一个月的时间，涨了22万星，恐怖如斯。</p>
-<img src="../../assets/manuscript-20260914/c29-742525f0e682d2.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>安装其实非常简单：只要你电脑环境没问题，核心就一条命令：</p>
-<pre data-language="bash"><code>npx @deepseek-ai/dsh web</code></pre>
-<p>简单，但不代表每台电脑都能一次安装成功，还是有一些小坑在这里面。</p>
-<p>我在自己的 Mac 上完整跑了一遍安装流程，安装明明成功了，启动的时候还是踩了一个 Node.js 版本的坑（后面细说）。</p>
-<img src="../../assets/manuscript-20260914/c29-f846a2a5a71b4c.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>这篇将分享两种安装方案，都是实际跑通过的：</p>
-<ol><li>懒人路线：把提示词直接甩给 Codex、Claude Code 或者其他 Agent，让它替你检查环境、安装和验证。</li><li>动手路线：自己一步一步装，遇到报错丢给 AI 看。</li></ol>
-<h2>我这台机器的实测环境</h2>
-<ul><li>macOS 26.0.1，Apple Silicon（arm64）</li><li>zsh 5.9</li><li>Node.js v22.19.0</li><li>npm / npx 10.9.3</li><li><code>@deepseek-ai/dsh 0.1.0-rc.6</code></li><li>Web UI：<code>http://127.0.0.1:3080</code></li></ul>
-<h2>方法一：直接把活儿甩给 Agent</h2>
-<p>把下面这段完整发给 Codex、Claude Code 或者其他能跑终端命令的 Agent：</p>
-<pre data-language="text"><code>请根据我当前电脑环境安装并启动 DeepSeek Harness：
-1. 先检查 Node.js、npm、系统架构和 3080 端口；缺少依赖时先说明再安装。
-2. 使用 npm 全局安装 @deepseek-ai/dsh。
-3. 根据当前版本的 --help 和官方 GitHub README 确认正确的 Web UI 启动命令，不要猜参数。
-4. 启动后验证本机端口和网页是否可访问，并告诉我打开地址。
-5. 遇到问题先查 https://github.com/deepseek-ai/deepseek-harness ，不要输出或修改任何 API Key。</code></pre>
+<h1>快速使用Claude code</h1>
+<p>这篇我们直接上手 Claude Code，从安装、登录、接入模型，一直用到自己的项目里。</p>
+<p>如果你想让 AI 帮你改代码、整理文章，或者开发一个每天都能用上的小工具，可以跟着往下做。</p>
+<h2>Claude Code 是什么？</h2>
+<p>Claude Code 是 Anthropic 推出的 AI 编程工具。你给它一个任务，它可以读取项目文件、分析实现方式、修改代码，再运行命令检查结果。</p>
+<img src="../../assets/manuscript-20260914/c27-0c498f3aa4fdd2.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
 <p />
-<h2>方法二：自己动手，一步步装</h2>
-<h3>第 1 步：检查环境</h3>
+<p>它的工作过程，可以理解为：<b>理解需求 → 查看文件 → 制定方案 → 执行修改 → 检查结果。</b></p>
+<p>比如，你可以让它解释一个看不懂的项目，排查一个报错，补一个功能，也可以让它读取本地的 Markdown 文章，生成摘要、整理目录、改写成不同平台的文案。</p>
+<p>这篇主要使用终端版。安装后，在项目文件夹里输入 <code>claude</code>，就能开始对话；习惯图形界面的朋友，也可以选择桌面应用或编辑器集成。<a href="https://code.claude.com/docs/en/overview" target="_blank" rel="noopener noreferrer">Claude Code 产品介绍</a></p>
+<p><b>先跑通一个小任务，后面再逐步加上项目规则、Skills 和外部工具。</b></p>
+<blockquote><p>截图用于说明操作位置与界面效果，具体版本、模型名称和套餐信息以实际页面为准。命令请使用正文中的代码块。</p></blockquote>
+<h2>安装前，准备好这几样</h2>
+<p>先检查电脑环境：</p>
+<table><colgroup><col /><col /></colgroup><thead><tr><th><p>项目</p></th><th><p>要求</p></th></tr></thead><tbody><tr><td><p>macOS</p></td><td><p>macOS 13 或更高版本</p></td></tr><tr><td><p>Windows</p></td><td><p>Windows 10 1809 或更高版本，可以原生使用，也可以使用 WSL</p></td></tr><tr><td><p>Linux</p></td><td><p>Ubuntu 20.04+、Debian 10+ 等受支持的发行版</p></td></tr><tr><td><p>内存</p></td><td><p>至少 4GB</p></td></tr><tr><td><p>网络</p></td><td><p>能正常连接所选模型服务，完成认证和请求</p></td></tr><tr><td><p>Node.js</p></td><td><p>原生安装不需要；选择 npm 安装时，需要 Node.js 22 或更高版本</p></td></tr></tbody></table>
+<p>Windows 推荐安装 Git for Windows，以便使用 Bash 工具；没有安装时，当前版本也支持使用 PowerShell 工具。完整要求见<a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener noreferrer">安装文档</a>。</p>
+<p>接着确定模型从哪里来：</p>
+<ul><li>有 Claude Pro、Max，或者已开通相应权限的 Team、Enterprise 账号，可以用 Claude 账号登录。</li><li>使用 Claude Console，则按 API 用量计费。</li><li>想接入 Kimi，可以按第 5 节配置对应的 API 服务。</li></ul>
+<p>Claude 免费账号不包含 Claude Code 使用权限。Claude 订阅和 Console API 余额是两套计费方式，购买订阅不会自动给 API 账户充值。<a href="https://code.claude.com/docs/en/authentication" target="_blank" rel="noopener noreferrer">账号与认证说明</a></p>
+<h2>安装 Claude Code</h2>
+<p>下面两种安装方式，<b>选一种即可</b>。</p>
+<p><b>方式一：原生安装</b></p>
+<p>macOS 打开“终端”；Linux 或 WSL 打开自己的终端，输入：</p>
+<pre data-language="bash"><code>curl -fsSL https://claude.ai/install.sh | bash</code></pre>
+<p>Windows 在开始菜单中搜索并打开 PowerShell，输入：</p>
+<pre data-language="powershell"><code>irm https://claude.ai/install.ps1 | iex</code></pre>
+<p>注意，Windows 这条命令要在 <b>PowerShell</b> 中执行。原生安装默认自动更新，安装命令来自<a href="https://code.claude.com/docs/en/quickstart" target="_blank" rel="noopener noreferrer">官方快速开始</a>。</p>
+<p><b>方式二：通过 npm 安装</b></p>
+<p>如果电脑已经装好 Node.js，也可以走 npm。</p>
+<p>先在终端检查版本：</p>
 <pre data-language="bash"><code>node -v
-npm -v
-uname -m</code></pre>
-<p>我这边分别得到 Node.js v22.19.0、npm 10.9.3 和 arm64。</p>
-<p>DeepSeek Harness 当前仓库声明的 Node.js 范围是：</p>
-<pre data-language="text"><code>^22.19.0 || &gt;=24.0.0</code></pre>
-<p>低于这个范围，先把 Node.js 升上去再说。</p>
-<h3>第 2 步：尝个鲜/长期用</h3>
-<p>如果只想尝鲜体验：</p>
-<pre data-language="bash"><code>npx @deepseek-ai/dsh web</code></pre>
-<p>准备长期使用：</p>
-<pre data-language="bash"><code>npm install -g @deepseek-ai/dsh</code></pre>
-<p>我实测的时候，官方 npm registry 在这台电脑上 DNS 超时了，最后是走镜像装好的：</p>
-<pre data-language="bash"><code>npm install -g @deepseek-ai/dsh --registry=https://registry.npmmirror.com</code></pre>
-<p>验证安装：</p>
-<pre data-language="bash"><code>dsh --version
-dsh --help</code></pre>
-<p>实测版本 <code>0.1.0-rc.6</code>。当前版本里，<code>dsh web</code> 是 <code>dsh --profile web</code> 的短写。</p>
-<h3>第 3 步：启动网页端</h3>
-<pre data-language="bash"><code>dsh web</code></pre>
-<p>等价写法：</p>
-<pre data-language="bash"><code>dsh --profile web</code></pre>
-<p>启动成功会显示：</p>
-<pre data-language="text"><code>dsh web: http://127.0.0.1:3080</code></pre>
-<p>浏览器打开 <code>http://127.0.0.1:3080</code> 就能看到界面了。</p>
-<h2>装好了，为什么还是启动失败？</h2>
-<p>我第一次启动，<code>dsh</code> 实际调用的是 <code>/usr/local/bin/node</code>，对应 Node.js v22.14.0，但是直接报错了：</p>
-<pre data-language="text"><code>The requested module 'node:zlib' does not provide an export named 'createZstdDecompress'</code></pre>
-<p>排查下来，是执行 <code>dsh</code> 的 Node 太旧，缺少它需要的 Zstd API。切到 Node.js v22.19.0，Harness 就能正常启动🤦‍♂️</p>
-<img src="../../assets/manuscript-20260914/c29-7021cec3f8f494.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>所以不能只看某个终端里的 <code>node -v</code>，还要看：</p>
-<pre data-language="bash"><code>which node
-which dsh</code></pre>
-<p>如果你电脑上同时装了 nvm、Homebrew 和系统 Node，特别容易出现"你看到的是一个 Node，真正干活的是另一个 Node"这种灵异现象。</p>
-<h2>第一次打开网页</h2>
-<p>首次访问会先看到"内测声明"。</p>
-<img src="../../assets/manuscript-20260914/c29-d4c55308985133.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>点继续，进入 API Key 引导。</p>
-<img src="../../assets/manuscript-20260914/c29-0dfb6d0697d126.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>你可以立刻填 DeepSeek 的 API Key，也可以先点"稍后配置"。如果环境或 Harness 设置里已经有可识别的 Key，可能不用重复填，以当前版本的实际页面为准。</p>
-<p>我后面是通过 Web 引导页保存的 Key。当前版本会把凭据写进 <code>~/.dsh/.credentials.yaml</code>，实测文件权限是 <code>600</code>，只有当前用户可读写。</p>
-<h2>选工作区，新建会话</h2>
-<p>点左侧"添加工作区"，选一个你准备交给 Harness 接管的文件夹。我用的是一个空白测试目录 <code>DeepSeek-harness-Work</code>。</p>
-<p>新建会话后，输入框解锁，主界面有四个关键状态：</p>
-<img src="../../assets/manuscript-20260914/c29-f8ad18cd3d42d9.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<ol><li>工作区：Agent 能动的项目范围；</li><li>模式：标准、PTC、极简或创造；</li><li>权限：比如 Workspace Write；</li><li>模型与推理等级：我这次是 DeepSeek-V4-Flash High。</li></ol>
-<p>第一次玩，千万不要直接选重要项目。先拿空目录确认权限和行为，再上真实的代码仓库。</p>
-<h2>用一个最小任务，验证它真的能干活</h2>
-<p>我在测试目录放了两个文件：</p>
-<ul><li><code>project-notes.md</code>：项目目标、文件说明和约束；</li><li><code>tasks.csv</code>：3 条待办。</li></ul>
-<p>发给 Harness 的提示词：</p>
-<pre data-language="text"><code>请先阅读当前目录里的 project-notes.md 和 tasks.csv，整理这个小项目的目标、文件说明和待办事项，并生成一份简洁的 README.md。开始前先给出计划；除 README.md 外不要修改其他文件。</code></pre>
-<p>别小看这个任务，它一次能验证五件事：工作区、文件读取、计划、文件写入和约束遵守。</p>
-<p>我先把权限切到 Read Only，跑了一次纯连通性测试。DeepSeek-V4-Flash 按要求返回"DeepSeek Harness API 实测成功"，没有调用任何工具。界面显示用时约 2 秒、首 token 约 2.5 秒、约 241 tok/s，这个速度是真挺快的。</p>
-<img src="../../assets/manuscript-20260914/c29-096c573d38eae8.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>然后在切换回 Workspace Write，跑完整的任务。Agent 的实际流程是：</p>
-<ol><li>先列计划；</li><li>读取 <code>project-notes.md</code> 和 <code>tasks.csv</code>；</li><li>归纳项目目标、文件说明和待办事项；</li><li>生成 <code>README.md</code>；</li><li>再检查一遍目录，确认其他文件没被动过。</li></ol>
-<p>整个任务用时约 12 秒，唯一新增的文件就是 <code>README.md</code>。我还是不太放心，又在 Agent 外部对两个原始文件做了 SHA-256 对比，跟测试前的副本完全一致。"除 README 外不要修改其他文件"这条约束，它是真的遵守。</p>
-<img src="../../assets/manuscript-20260914/c29-21feb289c94428.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<h2>四种模式怎么选</h2>
-<img src="../../assets/manuscript-20260914/c29-4681294155d0a3.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>本机"设置 → Agent 预设"页能直接看到四张预设卡片，每个预设都能查看或复制，页面还有"用创造模式创作自定义预设"的入口。</p>
-<img src="../../assets/manuscript-20260914/c29-7c7927e707f1d6.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<h3>标准模式</h3>
-<p>完整编码 Agent，支持文件编辑、Shell、文件与网页检索、Skills、计划、目标、子代理和工作流。第一次用，直接选它。</p>
-<h3>PTC 模式</h3>
-<p>标准模式的能力都有，另外通过 Code Mode SDK 暴露工具，让模型用 TypeScript 程序组合多步操作。适合批量处理和自动化流程。</p>
-<h3>极简模式</h3>
-<p>只保留持久 Bash 和 <code>str_replace_editor</code>，适合最小环境和模型基准测试。</p>
-<h3>创造模式</h3>
-<p>在标准模式上加了运行时检查、插件实验和自定义 preset 创作，适合魔改 Harness、开发新的 Agent 模板。</p>
-<h2>它和 Codex、Claude Code 最不一样的地方</h2>
-<p>一句话：DeepSeek Harness 不只是一个固定的编程 Agent，更像一套"给 Agent 装能力的装扮系统"。</p>
-<p>官方的说法是：<b>一切皆插件</b>。</p>
-<p>模型、工具、技能、会话、沙箱、存储、循环、调度和 UI，全都是插件。你可以换模型、装外部工具、接 Skills、调权限、开搜索、改界面、调用子 Agent，甚至重新组合运行模式。</p>
-<p>这话听起来像宣传语，但我在本机"设置 → 插件 → 插件列表"里有一大堆插件：模型、会话、凭据、沙箱、权限、Skills、目标、子 Agent、工作流、Web 搜索、工作区、Trajectory，还有一大堆 UI 组件。</p>
-<img src="../../assets/manuscript-20260914/c29-504091d01836ce.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>它还提供仅追加的会话日志，把系统提示词、工具调用、子 Agent 调度和上下文注入放进同一条事件流，方便恢复、分叉、检索和回放。</p>
-<p>所以它更像一个能被开发者反复魔改的 Agent 底座，而不是单纯的"DeepSeek 版 Codex"。</p>
-<h2>全网目前最火的 5 类玩法</h2>
-<p>GitHub 的 <a href="https://github.com/topics/dsh-plugin" target="_blank" rel="noopener noreferrer">dsh-plugin Topic</a> 有非常多的公开仓库。</p>
-<img src="../../assets/manuscript-20260914/c29-673698eb90f6a2.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<h3>接进完整 AI 工作台</h3>
-<p><a href="https://github.com/Devin-AXIS/iPolloWork" target="_blank" rel="noopener noreferrer">iPolloWork</a>：覆盖代码、设计、PPT、网站和视频工作流，把 DSH 用作专门子 Agent 的委派层。</p>
-<h3>做跨平台内容发现 Agent</h3>
-<p><a href="https://github.com/whiteguo233/OpenBiliClaw" target="_blank" rel="noopener noreferrer">OpenBiliClaw</a>：覆盖 B 站、小红书、抖音、YouTube、X、知乎、Reddit、微博和开放 Web，并声明支持 DeepSeek Harness 插件。</p>
-<h3>魔改 Web UI</h3>
-<p><a href="https://github.com/zhu1090093659/dsh-web-ui" target="_blank" rel="noopener noreferrer">dsh-web-ui</a>：提供任务看板、Git 图、右侧面板、远程手机 UI、Token 统计，甚至还有宠物和皮肤中心，整挺花🤣</p>
-<img src="../../assets/manuscript-20260914/c29-2eccfd67e8e506.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<h3>给纯文本 Agent 补视觉</h3>
-<p><a href="https://github.com/liustack/modlens" target="_blank" rel="noopener noreferrer">modlens</a>：可以把截图转成 OCR、布局和语义等结构化证据，可以拿来做图片问答、前端 UI 还原和 GUI 自动化。</p>
-<h3>替换交互层</h3>
-<p><a href="https://github.com/ccch1mneyyy/dsh-TUI" target="_blank" rel="noopener noreferrer">dsh-TUI</a>：目标是做 Claude Code 风格的全屏终端。</p>
-<p><a href="https://github.com/omdsh-dev/DSH-better-sidebar" target="_blank" rel="noopener noreferrer">DSH-better-sidebar</a>：把文件、终端、Git 和子代理集中到侧边栏工作台。</p>
-<h4>生成复杂 3D 交互应用，并用 Trajectory 追踪全过程</h4>
-<p><a href="https://x.com/stevibe/status/2087903879845515676" target="_blank" rel="noopener noreferrer">@stevibe</a> 用 Harness 生成了一个 3D 魔方：27 分钟、52 个步骤。还特别强调，可以在 Trajectory 页面逐条检查 assistant 和工具调用。</p>
-<img src="../../assets/manuscript-20260914/c29-b94a339a40636c.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>这个案例说明，Harness 不只是改几行代码的工具。需要较长执行链、又想保留全程证据的复杂任务，才是它的主场。</p>
-<h4>生成高精度工程类 3D 仿真</h4>
-<p><a href="https://x.com/NFT_Chen/status/2087958659838149033" target="_blank" rel="noopener noreferrer">@NFT_Chen</a> 展示了一个四冲程柴油机 3D 交互仿真：气缸、活塞、曲轴、配气、燃油、润滑、冷却系统全都有，还能拖拽视角、看相位和实时运行参数。</p>
-<img src="../../assets/manuscript-20260914/c29-1fddb246534d0e.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>比起一句"帮我做个网页"，这种带明确结构、物理逻辑和交互要求的任务，更能看出模型、工具调用和长任务调度到底行不行。</p>
-<h4>用插件魔改 UI，把预览面板直接嵌进工作台</h4>
-<p><a href="https://x.com/dotey/status/2088059102131794012" target="_blank" rel="noopener noreferrer">@dotey</a> 展示了插件化 UI：左边是 Agent 对话和执行过程，右边直接打开 Explorer、Tasks、网页或 PPT 预览。</p>
-<img src="../../assets/manuscript-20260914/c29-0da519f1eefe32.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>这可能是目前最能体现"一切皆插件"的大众化玩法：不动 Agent 的核心任务，只换交互层，就能把 Harness 改造成 PPT 工作台、网页工作台或者代码预览器。</p>
-<h4>把 Harness 做成可学习、可运行的教程和知识产品</h4>
-<p><a href="https://x.com/yanhua1010/status/2087918781326848460" target="_blank" rel="noopener noreferrer">@yanhua1010</a> 做了一套"从零实现一个 AI Agent"的 Harness 教程，包含原理、源码拆解、渐进式 Demo 和可运行项目。</p>
-<img src="../../assets/manuscript-20260914/c29-32aa21aba79b5e.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>很多人已经不满足于"把它装起来"，更想搞懂插件、Agent Loop、上下文和运行时到底是怎么组合的。</p>
+npm -v</code></pre>
+<p>Node.js 需要 22 或更高版本。还没安装的朋友，可以从 <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">Node.js 官网</a>获取符合要求的版本。</p>
+<p>Windows 使用这条路线时，可以按 <code>Windows + R</code>，输入 <code>cmd</code>，点击“确定”，打开命令提示符：</p>
+<img src="../../assets/manuscript-20260914/c27-54353c06d54dd2.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
 <p />
-<h2>实测 Case 1：把 Harness 变成"对话 + 文件 + 预览"工作台</h2>
-<p>先复现 @dotey 那个插件化工作台，就是上面表格里收藏反超点赞的那条，对应插件 DSH-better-sidebar。</p>
-<p>安装没有跑任何远程脚本，直接走 DSH 官方插件命令：</p>
-<pre data-language="bash"><code>dsh plugin --profile web add dsh-better-sidebar@0.10.3</code></pre>
-<p>安装器最终退出码 0，<code>dsh plugin --profile web list --depth 0</code> 也明确列出了 <code>dsh-better-sidebar 0.10.3</code>。重启的时候又踩到那个 Node 版本坑：沙箱外登录 Shell 默认调用 Node.js 22.14.0，而当前 DSH 的持久化模块需要更新的 Zstd API；显式切回本机的 Node.js 22.19.0 之后，DSH 正常监听 <code>127.0.0.1:39201</code>。</p>
-<img src="../../assets/manuscript-20260914/c29-782c093a2dcd7a.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>重新打开原来的测试会话，右侧已经出现 Explorer，能直接看到工作区里的 <code>project-notes.md</code>、<code>tasks.csv</code> 和 Harness 生成的 <code>README.md</code>。这一步验证的重点是插件 UI 真的加载了，不是"依赖写进了 package.json"就完事。</p>
-<img src="../../assets/manuscript-20260914/c29-f89d6137c60e47.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>接着在 Explorer 里点 <code>README.md</code>，右侧不用离开会话就出现 Markdown 预览，还能切换编辑和保存。这就是 Harness 的实用点：左边继续让 Agent 干活，右边同时检查文件和成品。插件不是单独的玩具，它在同一个运行时里直接拼成了工作台。</p>
-<p><b>实测结论：完整跑通。</b>安装、配置登记、Node 兼容性处理、插件加载、工作区文件浏览和 Markdown 实时预览，六个环节全部验证。</p>
-<h2>实测 Case 2：OpenPencil 可编辑设计组合，为什么只能判"部分成功"</h2>
-<p>先安装项目包：</p>
-<pre data-language="bash"><code>dsh plugin --profile web add @zseven-w/dsh-openpencil@0.1.0-rc.1</code></pre>
-<p>安装器退出码 0，重启后的创造模式也确实拿到了 <code>openpencil_new</code> 和 <code>openpencil_render</code> 两个工具。我让它创建一个 1200×675 的可编辑 <code>harness-case-board.op</code>，并且明确禁止用普通文本或 SVG 冒充。</p>
-<p>结果工具真正执行到事务层，返回 <code>OpenPencil editor host binary is unavailable</code>🤔</p>
-<p>翻了一圈：本机 <code>/Applications</code> 里没有 OpenPencil.app，PATH 里也没有对应可执行文件，插件缓存只有 <code>render-access.key</code>，没有 editor host binary。创建失败后没有残留 <code>.op</code> 文件，后续渲染自然又报 <code>.op file not found</code>。</p>
-<img src="../../assets/manuscript-20260914/c29-39e7a7f59fa15a.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p><b>实测结论：部分成功。</b>插件安装和工具注册没问题，但可编辑文件的创建与渲染没跑通。缺的不是 API Key，而是 OpenPencil 的桌面/编辑器 Host。只装 DSH 插件包，不等于拥有外部桌面运行时。遇到同样的报错，也不要拿 SVG 改后缀伪造成功。</p>
-<h2>实测 Case 3：让 Agent 在运行中给自己造一个新工具</h2>
-<p>我设计了一个 Case：</p>
-<p>创造模式必须在当前会话里临时注册一个 <code>task_csv_summary</code> 工具，立刻调用它分析 <code>tasks.csv</code>，再生成 <code>tasks-dashboard.md</code>。</p>
-<p>Agent 先用 <code>cordis_inspect_*</code> 查询 <code>harness.defineTool/registerTool</code>、Host <code>fs</code> 服务和工具列表，然后通过 <code>cordis_define</code> 创建 <code>csvsum-1/pkg-1</code>，再用 <code>cordis_run</code> 启动为 <code>run-1</code>。<code>Tool.listTools</code> 确认 <code>task_csv_summary</code> 已经进了当前 Agent 的工具集。</p>
-<img src="../../assets/manuscript-20260914/c29-f56acd3cdd3c2d.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p>关键一步不是"代码写出来了"，而是下一轮模型步骤真的调用了 <code>task_csv_summary("tasks.csv")</code>。工具经 Host <code>fs</code> 服务读取 CSV，返回：总任务数 3；P0=2、P1=1；待处理=2、进行中=1；P0 未完成 2 项。整个统计没有用 Bash、Python、Node 脚本或者模型心算代替，就是它自己刚造出来的工具在干活。</p>
-<p>然后 Agent 只根据工具返回的 JSON 写出 <code>tasks-dashboard.md</code>，侧边栏立刻打开 Markdown 预览。原来的 <code>tasks.csv</code>、<code>README.md</code>、<code>project-notes.md</code> 我逐字节复查过，一个字都没变。</p>
-<img src="../../assets/manuscript-20260914/c29-873ba97a9f9341.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
-<p><b>实测结论：完整跑通，而且这个 Case 最能体现 Harness 的差异。</b></p>
-<p>同一个会话里跑完"检查运行时 → 创建插件 → 加载插件 → 动态工具进入模型工具集 → 实际调用 → 生成可预览产物"，全程不用重启。看到它把自己刚造的工具用起来的那一刻，我承认有被小小震撼到。这个临时插件重启后会失效，想长期用的话，再打包成正式 DSH 插件就行。</p>
-<h2>最后</h2>
-<p>只想最快打开：</p>
-<pre data-language="bash"><code>npx @deepseek-ai/dsh web</code></pre>
-<p>准备长期用：</p>
-<pre data-language="bash"><code>npm install -g @deepseek-ai/dsh
-dsh web</code></pre>
-<p>打不开的时候，先确认真正执行 <code>dsh</code> 的 Node.js 满不满足 <code>^22.19.0 || &gt;=24.0.0</code>，我这次前后两个坑全都是它。</p>
-<p>打开之后：添加 API Key、选一个测试工作区、用标准模式跑一个能读文件并生成 README 的最小任务。五分钟，就能验证它在你机器上到底行不行。</p>
-<p>从一条命令装好，到插件工作台，再到 Agent 在运行中给自己造工具，DeepSeek Harness并不是"DeepSeek版Codex"：它把模型、工具、UI 全部拆成了可替换的插件。<b>它不是一个定死的产品，你可以按自己的工作流，把它重新拼装成一套属于你的 Agent 底座。</b></p>
-<p />
+<p>然后执行安装命令，macOS、Linux 也可以在自己的终端里执行同一条：</p>
+<pre data-language="bash"><code>npm install -g @anthropic-ai/claude-code</code></pre>
+<p>看到安装完成的提示后，就可以继续了：</p>
+<img src="../../assets/manuscript-20260914/c27-55d0b16cc95231.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>如果 npm 报权限错误，先检查 Node.js 的安装方式，或改用前面的原生安装方式。不要直接给安装命令加 <code>sudo</code>。<a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener noreferrer">npm 安装说明</a></p>
+<p><b>最后，检查是否装成功。</b></p>
+<p>无论选择哪种方式，都在终端执行：</p>
+<pre data-language="bash"><code>claude --version
+claude doctor</code></pre>
+<p>第一条显示版本号，第二条检查安装环境。能显示版本，说明程序已经装好，下一步完成账号登录。</p>
+<h2>进入项目，开始第一次对话</h2>
+<p><b>第一步：打开自己的项目目录。</b></p>
+<p>先准备一个测试文件夹，可以放一个小项目，也可以放几篇文章的副本。</p>
+<p>在终端输入：</p>
+<pre data-language="bash"><code>cd "你的项目文件夹路径"
+claude</code></pre>
+<p>把引号里的内容换成自己的实际路径，路径里有空格时保留引号。</p>
+<p>下面这张图，就是用 <code>cd</code> 进入文件夹的过程。前面的路径变了，说明终端已经切换到对应目录：</p>
+<img src="../../assets/manuscript-20260914/c27-c8afa6f6553dbe.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>记住，<b>你在哪个文件夹里启动 Claude Code，它就从哪个工作目录开始处理任务。</b></p>
+<p><b>第二步：选择界面主题。</b></p>
+<p>首次启动时，按提示完成界面设置。如果出现主题选择，使用方向键选择，再按回车确认。</p>
+<p>我选的是 Dark，黑底界面看着挺舒服。</p>
+<img src="../../assets/manuscript-20260914/c27-422e7a719360c9.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p><b>第三步：选择登录方式。</b></p>
+<p>有 Claude 订阅的朋友，选择 Claude 账号；使用官方 API 的朋友，选择 Console 对应的入口。</p>
+<img src="../../assets/manuscript-20260914/c27-17cbb2cca1037f.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>按照提示在浏览器完成授权，完成后回到终端。如果浏览器没有自动打开，就复制界面提供的登录链接。</p>
+<p>需要重新登录时，在 Claude Code 对话里输入：</p>
+<pre data-language="text"><code>/login</code></pre>
+<p>使用 Kimi 的朋友，可以先跳到第 5 节完成配置，再回来测试。</p>
+<p><b>第四步：确认状态，发一句话。</b></p>
+<p>在 Claude Code 中输入：</p>
+<pre data-language="text"><code>/status</code></pre>
+<p>检查当前目录、账号或凭据来源、模型配置，再发一句“你好”。</p>
+<p>终端里的对话效果如下：</p>
+<img src="../../assets/manuscript-20260914/c27-d81112228d0ee0.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>能收到回复以后，再让它做一点真正和文件有关的事：</p>
+<pre data-language="text"><code>请用中文回复。
+列出当前目录第一层的文件和文件夹，说明这个目录主要用来做什么。
+先只阅读，不修改文件。信息不足的地方直接告诉我。</code></pre>
+<p>当它能够找到你准备的文件，就完成了从“装上工具”到“开始使用”的第一步。</p>
+<p>这里分清两种命令：<code>claude</code>、<code>claude doctor</code> 在电脑终端里输入；<code>/status</code>、<code>/login</code> 在进入 Claude Code 后输入。</p>
+<h2>把 Kimi 接入 Claude Code</h2>
+<p>Claude Code 负责操作文件和工具，模型负责理解与生成。接入 Kimi 后，你依然在 Claude Code 里工作，但模型请求会发给 Kimi。</p>
+<p>先分清两个服务：</p>
+<table><colgroup><col /><col /><col /></colgroup><thead><tr><th><p>使用方式</p></th><th><p>Key 从哪里获取</p></th><th><p>服务地址</p></th></tr></thead><tbody><tr><td><p>Kimi 开放平台，按 API 用量计费</p></td><td><p>Kimi 开放平台控制台</p></td><td><p><code>https://api.moonshot.cn/anthropic</code></p></td></tr><tr><td><p>Kimi Code，使用对应套餐权益</p></td><td><p>Kimi Code 控制台</p></td><td><p><code>https://api.kimi.com/coding/</code></p></td></tr></tbody></table>
+<p>两种服务的 Key、模型名称和额度需要分别配置。下面演示<b>开放平台路线</b>；Kimi Code 用户使用<a href="https://www.kimi.com/code/docs/third-party-tools/claude-code.html" target="_blank" rel="noopener noreferrer">对应的官方接入配置</a>。</p>
+<p><b>第一步：创建 API Key。</b></p>
+<p>打开 <a href="https://platform.kimi.com/" target="_blank" rel="noopener noreferrer">Kimi 开放平台</a>，注册或登录后，进入 API Key 管理页面。</p>
+<img src="../../assets/manuscript-20260914/c27-66da1746ca21c9.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>点击“创建 API Key”，填写一个方便自己识别的名称，比如 <code>claude-code</code>，再确认创建。</p>
+<img src="../../assets/manuscript-20260914/c27-cd16ec4618a436.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
+<p>把生成的 Key 保存在自己的密码管理器中，配置时需要使用。它相当于调用接口的凭证，不要放进文章、截图或公开代码仓库。</p>
+<p><b>第二步：写入模型配置。</b></p>
+<p>退出正在运行的 Claude Code。找到用户目录中的 <code>.claude/settings.json</code>：</p>
+<ul><li>macOS、Linux：<code>~/.claude/settings.json</code></li><li>Windows：<code>C:\Users\你的用户名\.claude\settings.json</code></li></ul>
+<p>没有这个文件，就创建 <code>.claude</code> 文件夹和 <code>settings.json</code>。文件已存在时，先留一份副本，再合并下面的 <code>env</code> 字段，保留其他设置。</p>
+<p>下面将各任务使用的模型统一配置为 <code>kimi-k3[1m]</code>，先跑通一套模型：</p>
+<pre data-language="json"><code>{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.moonshot.cn/anthropic",
+    "ANTHROPIC_AUTH_TOKEN": "YOUR_MOONSHOT_API_KEY",
+    "ANTHROPIC_MODEL": "kimi-k3[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "kimi-k3[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "kimi-k3[1m]",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "kimi-k3[1m]",
+    "ANTHROPIC_DEFAULT_FABLE_MODEL": "kimi-k3[1m]",
+    "CLAUDE_CODE_SUBAGENT_MODEL": "kimi-k3[1m]",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "1000000",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max"
+  }
+}</code></pre>
+<p>把 <code>YOUR_MOONSHOT_API_KEY</code> 换成自己的 Key。这里的模型映射和参数依据 <a href="https://platform.kimi.com/docs/guide/claude-code-kimi" target="_blank" rel="noopener noreferrer">Kimi 开放平台接入文档</a>整理；使用前确认账号有对应模型的访问权限。</p>
+<p>如果首次使用第三方服务，仍停在账号引导页，按同一份官方文档完成一次初始化：在用户目录的 <code>.claude.json</code> 顶层加入 <code>"hasCompletedOnboarding": true</code>，保留已有字段。这个文件和 <code>.claude/settings.json</code> 是两个不同的文件。</p>
+<p>检查配置时，留意有没有同时设置 <code>ANTHROPIC_API_KEY</code>。这条开放平台路线使用 <code>ANTHROPIC_AUTH_TOKEN</code>，应移除冲突的认证字段。<code>settings.json</code> 中的 <code>env</code> 会覆盖终端同名变量，所以不要在几处填互相矛盾的地址和模型。</p>
+<p><b>第三步：重新启动并验证。</b></p>
+<p>在项目目录中运行：</p>
+<pre data-language="bash"><code>claude</code></pre>
+<p>再输入 <code>/status</code>，确认服务地址为 <code>https://api.moonshot.cn/anthropic</code>，模型为配置的 Kimi 模型。</p>
+<p>先发送“你好”，再试一次文件读取。两个操作都成功，才说明对话和项目操作都跑通了。</p>
+<p>如果使用终端里的 <code>export</code> 临时设置变量，需要在<b>同一个终端窗口</b>里启动 <code>claude</code>；关掉窗口后，临时变量不会自动保留。</p>
+<h2>让 Claude Code 真正开始干活</h2>
+<p>我更建议从一个明确的小需求开始。</p>
+<p>比如读懂项目：</p>
+<pre data-language="text"><code>阅读 README 和主要入口文件，告诉我：
+1. 这个项目解决什么问题。
+2. 主要目录分别负责什么。
+3. 应该用什么命令启动、构建和检查。
+先给我说明，不修改代码。</code></pre>
+<p>比如修复问题：</p>
+<pre data-language="text"><code>平台选择框里的文字显示不全。
+复现方式：打开内容分发助手，展开平台列表，选择“小红书”。
+预期效果：完整显示平台名称，窗口变窄后仍能正常操作。
+请定位相关样式，只修改这个问题，并告诉我怎么验证。</code></pre>
+<p>任务稍复杂时，先让它出方案。在终端启动计划模式：</p>
+<pre data-language="bash"><code>claude --permission-mode plan</code></pre>
+<p>也可以在现有会话中按 <code>Shift+Tab</code>，切换到 Plan 模式。看完方案，确认方向，再选择实施。想查看各项操作的权限提示，可以使用 <code>claude --permission-mode default</code> 启动，并留意界面的权限状态。<a href="https://code.claude.com/docs/en/permission-modes" target="_blank" rel="noopener noreferrer">权限模式说明</a></p>
+<p><b>把长期规则写进 CLAUDE.md。</b></p>
+<p>有些话，不需要每次都重复。比如使用什么语言、项目用什么技术、结果放在哪里，都可以写进项目根目录的 <code>CLAUDE.md</code>。</p>
+<p>在 Claude Code 中输入 <code>/init</code>，生成初稿后再检查、修改。以内容分发插件为例，可以写成：</p>
+<pre data-language="markdown"><code># 项目说明
+
+这是一个 Obsidian 内容分发助手插件，使用 TypeScript。
+目标是把 Markdown 笔记转换成不同平台的文案。
+
+# 协作要求
+
+- 使用中文回复，修改前先阅读相关代码。
+- 使用 Obsidian 的 API 和主题变量，保持与应用界面一致。
+- 原始笔记只用于读取，生成结果放在独立的预览区域。
+- API Key 通过设置页配置，不写死在源码里。
+- 每次完成后说明改动、检查结果和仍需手动验证的部分。</code></pre>
+<p>项目规则要具体，能指导实际操作。<code>CLAUDE.md</code> 的文件名按这个大小写写；需要查看记忆设置时，可以使用 <code>/memory</code>。<a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener noreferrer">项目记忆说明</a></p>
 <p />
 </article>

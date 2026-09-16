@@ -66,9 +66,9 @@ def create_app(data_dir=None):
     oauth = OAuth()
     enabled = bool(os.getenv('OAUTH_CLIENT_ID') and os.getenv('OAUTH_CLIENT_SECRET'))
     if enabled:
-        provider = os.getenv('OPENID_PROVIDER_URL', 'https://www.modelscope.cn').rstrip('/')
-        if provider not in ('https://modelscope.cn', 'https://www.modelscope.cn'):
-            raise RuntimeError('Only the ModelScope identity provider is supported')
+        # Studio can inject an internal issuer alias. Use the verified public
+        # ModelScope discovery endpoint so redirects remain browser-accessible.
+        provider = 'https://www.modelscope.cn'
         oauth.register(name='modelscope', client_id=os.environ['OAUTH_CLIENT_ID'], client_secret=os.environ['OAUTH_CLIENT_SECRET'], server_metadata_url=provider+'/.well-known/openid-configuration', client_kwargs={'scope':'openid profile'})
     raw = (ROOT / 'assets/content.js').read_text().split('=',1)[1].strip().rstrip(';')
     chapters = {c['id'] for c in json.loads(raw)['chapters'] if c.get('status') != 'pending'}

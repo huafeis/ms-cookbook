@@ -70,3 +70,5 @@ node tests/discussion-browser.cjs
 ```
 
 该验证会启动 7861 端口的隔离测试服务并生成测试会话，仅写入临时目录；结束后清理，不往真实评论库写入测试内容。
+
+创空间提供方兼容：认证发现固定使用 `https://www.modelscope.cn/.well-known/openid-configuration`，避免平台内部提供方别名触发地址白名单或浏览器跳转问题。客户端 ID 和密钥仍取自平台注入。

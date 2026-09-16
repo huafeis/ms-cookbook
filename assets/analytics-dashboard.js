@@ -5,7 +5,17 @@
 
   async function request(path,options={}) {
     const headers={'Content-Type':'application/json',...options.headers};
-    const response=await fetch(path,{credentials:'same-origin',...options,headers});
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),10000);
+    let response;
+    try {
+      response=await fetch(path,{credentials:'same-origin',...options,headers,signal:controller.signal});
+    } catch(error) {
+      if(error.name==='AbortError')throw new Error('统计服务响应超时，请稍后刷新');
+      throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
     let data={};try{data=await response.json();}catch{/* Preserve the status-based error below. */}
     if(!response.ok) {
       const error=new Error(typeof data.detail==='string'?data.detail:'请求暂时无法完成');error.status=response.status;throw error;

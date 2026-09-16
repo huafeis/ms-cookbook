@@ -41,7 +41,7 @@ def test_period_uv_deduplicates_the_same_visitor_across_days(analytics_site):
     app,client=analytics_site
     today=datetime.now(ZoneInfo('Asia/Shanghai')).date()
     yesterday=today-timedelta(days=1)
-    with app.state.db() as db:
+    with app.state.analytics_db() as db:
         for day in (yesterday.isoformat(),today.isoformat()):
             db.execute('INSERT INTO analytics_page_daily VALUES (?,?,?)',(day,'home',1))
             db.execute('INSERT INTO analytics_visitor_daily VALUES (?,?,?)',(day,'home','same-visitor'))
@@ -69,3 +69,24 @@ def test_analytics_range_and_page(analytics_site):
     assert response.status_code==200 and response.json()['range']['days']==7
     future=(today+timedelta(days=1)).isoformat()
     assert client.get(f'/api/analytics/summary?start={today.isoformat()}&end={future}').status_code==422
+
+
+def test_analytics_uses_an_isolated_database(analytics_site):
+    app,_=analytics_site
+    with app.state.db() as db:
+        tables={row['name'] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    assert 'analytics_page_daily' not in tables
+    with app.state.analytics_db() as db:
+        tables={row['name'] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        journal=db.execute('PRAGMA journal_mode').fetchone()[0]
+    assert {'analytics_page_daily','analytics_visitor_daily'} <= tables
+    assert journal=='delete'
+
+
+def test_corrupted_analytics_database_is_quarantined_and_rebuilt(analytics_site,tmp_path):
+    _,client=analytics_site
+    (tmp_path/'analytics.sqlite3').write_bytes(b'corrupted analytics database')
+    response=client.post('/api/analytics/view',json={'page':'home','visitor':'visitor_aaaaaaaaaaaaaaaa'})
+    assert response.status_code==204
+    assert client.get('/api/analytics/summary?days=1').json()['today']=={'pv':1,'uv':1}
+    assert len(list(tmp_path.glob('analytics.corrupt-*.sqlite3')))==1

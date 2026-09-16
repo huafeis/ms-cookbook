@@ -79,6 +79,9 @@ try {
   const files = ['Dockerfile', 'requirements.txt', 'app.py', 'index.html', 'favicon.svg', 'assets', 'content', 'chapters', 'CONTRIBUTING.md', 'README.md', 'README.zh-CN.md', 'LICENSE'];
   const archive = join(temporary, 'site.tar');
   run('git', ['archive', '--format=tar', '--output', archive, commit, '--', ...files]);
+  // Sparse paths absent from disk otherwise keep their old index entries.
+  // Reset only the three application-owned directories before importing them.
+  run('git', ['rm', '-r', '-f', '--cached', '--sparse', '--ignore-unmatch', '--', 'assets', 'chapters', 'content'], target);
   // Replace the application-owned asset directory to remove obsolete images on updates.
   const oldAssets = join(target, 'assets');
   if (existsSync(oldAssets)) rmSync(oldAssets, { recursive: true });

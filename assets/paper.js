@@ -303,6 +303,7 @@
     // Preserve community links published before the route was named contribute.
     if(location.hash==='#community')history.replaceState(null,'','#contribute');
     const {name,sub,pathKey}=parseHash(location.hash,paths);
+    const previousPage=currentView==='reader'?currentChapter?.id:currentView;
     const pathChanged=currentPathKey!==pathKey;
     currentPathKey=pathKey;
     const chapter=chapters.get(name);
@@ -322,6 +323,8 @@
       if(view==='contents')renderIndex();if(view==='paths')renderPath(sub);
     }
     currentView=view;
+    const analyticsPage=view==='reader'?chapter.id:view;
+    if(analyticsPage!==previousPage)window.dispatchEvent(new CustomEvent('purplebook:route',{detail:{page:analyticsPage}}));
     requestAnimationFrame(()=>{
       if(view==='reader'&&sub){const target=document.getElementById(sub);if(target){target.scrollIntoView({block:'start',behavior:'instant'});target.tabIndex=-1;target.focus({preventScroll:true});}}
       else if(!samePath)window.scrollTo({top:0,behavior:'instant'});

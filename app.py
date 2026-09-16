@@ -1,21 +1,34 @@
 """Reading community API and static site; OAuth credentials never leave this process."""
 from contextlib import contextmanager
+from datetime import datetime, timedelta
+import hashlib
+import hmac
 import json
+import logging
 import os
 import secrets
 import sqlite3
+import threading
 import time
 from pathlib import Path
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel, Field
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
 
 ROOT = Path(__file__).resolve().parent
+LOGGER = logging.getLogger(__name__)
+
+ANALYTICS_SCHEMA = '''
+CREATE TABLE IF NOT EXISTS analytics_page_daily(day TEXT NOT NULL, page TEXT NOT NULL, pv INTEGER NOT NULL DEFAULT 0 CHECK(pv >= 0), PRIMARY KEY(day, page));
+CREATE TABLE IF NOT EXISTS analytics_visitor_daily(day TEXT NOT NULL, page TEXT NOT NULL, visitor_hash TEXT NOT NULL, PRIMARY KEY(day, page, visitor_hash));
+CREATE INDEX IF NOT EXISTS analytics_visitors_page_day ON analytics_visitor_daily(page, day);
+'''
 
 class Entry(BaseModel):
     kind: str
@@ -28,11 +41,16 @@ class Entry(BaseModel):
 class Wish(BaseModel):
     text: str = Field(max_length=2000)
 
+class AnalyticsView(BaseModel):
+    page: str = Field(min_length=1, max_length=64)
+    visitor: str = Field(min_length=16, max_length=128, pattern=r'^[A-Za-z0-9_-]+$')
+
 
 def create_app(data_dir=None):
     folder = Path(data_dir or os.getenv('DATA_DIR', ROOT / '.data'))
     folder.mkdir(parents=True, exist_ok=True)
     db_path = folder / 'reading.sqlite3'
+    analytics_path = folder / 'analytics.sqlite3'
     @contextmanager
     def db():
         conn = sqlite3.connect(db_path, timeout=15)
@@ -53,6 +71,46 @@ def create_app(data_dir=None):
         CREATE TABLE IF NOT EXISTS wishes(id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), text TEXT NOT NULL, created INTEGER NOT NULL);
         CREATE INDEX IF NOT EXISTS wishes_user_time ON wishes(user_id, created);
         ''')
+
+    @contextmanager
+    def analytics_db():
+        conn = sqlite3.connect(analytics_path, timeout=5)
+        conn.row_factory = sqlite3.Row
+        conn.execute('PRAGMA busy_timeout=5000')
+        try:
+            with conn: yield conn
+        finally:
+            conn.close()
+
+    def analytics_corruption(error):
+        message = str(error).lower()
+        return any(marker in message for marker in ('malformed', 'file is not a database', 'database disk image'))
+
+    def initialize_analytics_database():
+        with analytics_db() as conn:
+            result = conn.execute('PRAGMA quick_check').fetchone()[0]
+            if result != 'ok': raise sqlite3.DatabaseError(result)
+            # The Studio workspace is persistent storage shared across deployments.
+            # A rollback journal avoids leaving WAL sidecars across instance changes.
+            conn.execute('PRAGMA journal_mode=DELETE').fetchone()
+            conn.execute('PRAGMA synchronous=FULL')
+            conn.executescript(ANALYTICS_SCHEMA)
+
+    def quarantine_analytics_database(error):
+        suffix = f'{int(time.time())}-{secrets.token_hex(4)}'
+        backup = folder / f'analytics.corrupt-{suffix}.sqlite3'
+        for sidecar in ('', '-wal', '-shm', '-journal'):
+            source = Path(str(analytics_path) + sidecar)
+            if source.exists(): source.replace(Path(str(backup) + sidecar))
+        LOGGER.error('Quarantined corrupted analytics database at %s: %s', backup, error)
+        return backup
+
+    try:
+        initialize_analytics_database()
+    except sqlite3.DatabaseError as error:
+        if not analytics_corruption(error): raise
+        quarantine_analytics_database(error)
+        initialize_analytics_database()
     key_path = folder / 'session.key'
     if not key_path.exists():
         try:
@@ -67,7 +125,8 @@ def create_app(data_dir=None):
         raise RuntimeError('Public OAuth deployments require HTTPS')
     base = base.rstrip('/')
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
-    app.add_middleware(SessionMiddleware, secret_key=os.getenv('SESSION_SECRET') or key_path.read_text(), session_cookie='purplebook_session', max_age=7*86400, same_site='lax', https_only=parsed.scheme=='https')
+    session_secret = os.getenv('SESSION_SECRET') or key_path.read_text()
+    app.add_middleware(SessionMiddleware, secret_key=session_secret, session_cookie='purplebook_session', max_age=7*86400, same_site='lax', https_only=parsed.scheme=='https')
     oauth = OAuth()
     enabled = bool(os.getenv('OAUTH_CLIENT_ID') and os.getenv('OAUTH_CLIENT_SECRET'))
     if enabled:
@@ -76,9 +135,43 @@ def create_app(data_dir=None):
         provider = 'https://www.modelscope.cn'
         oauth.register(name='modelscope', client_id=os.environ['OAUTH_CLIENT_ID'], client_secret=os.environ['OAUTH_CLIENT_SECRET'], server_metadata_url=provider+'/.well-known/openid-configuration', client_kwargs={'scope':'openid profile'})
     raw = (ROOT / 'assets/content.js').read_text().split('=',1)[1].strip().rstrip(';')
+    book_data = json.loads(raw)
     # Keep notes attached to their original article when display numbers change.
-    chapters = {c['id']: c.get('discussionId', c['id']) for c in json.loads(raw)['chapters'] if c.get('status') != 'pending'}
+    chapters = {c['id']: c.get('discussionId', c['id']) for c in book_data['chapters'] if c.get('status') != 'pending'}
     admins = set(filter(None, os.getenv('MODERATOR_SUBS','').split(',')))
+    analytics_pages = {'home','contents','paths','practice','contribute'} | {c['id'] for c in book_data['chapters']}
+    analytics_titles = {'home':'首页','contents':'全书目录','paths':'阅读路径','practice':'真实任务库','contribute':'社区共建'}
+    analytics_titles.update({c['id']:c['title'] for c in book_data['chapters']})
+    analytics_timezone = ZoneInfo('Asia/Shanghai')
+    analytics_lock = threading.Lock()
+    analytics_repair_lock = threading.Lock()
+    analytics_cleanup_day = {'value': ''}
+
+    def repair_analytics_database(original_error):
+        if not analytics_corruption(original_error): raise original_error
+        with analytics_repair_lock:
+            try:
+                with analytics_db() as conn:
+                    result = conn.execute('PRAGMA quick_check').fetchone()[0]
+                    if result == 'ok': return
+                    current_error = sqlite3.DatabaseError(result)
+            except sqlite3.DatabaseError as error:
+                if not analytics_corruption(error): raise
+                current_error = error
+            quarantine_analytics_database(current_error)
+            initialize_analytics_database()
+
+    def use_analytics_database(operation):
+        try:
+            return operation()
+        except sqlite3.DatabaseError as error:
+            if not analytics_corruption(error):
+                raise HTTPException(503, '统计服务暂时不可用，请稍后重试') from error
+            try:
+                repair_analytics_database(error)
+                return operation()
+            except sqlite3.DatabaseError as retry_error:
+                raise HTTPException(503, '统计服务暂时不可用，请稍后重试') from retry_error
 
     def user(request):
         sid = request.session.get('sid')
@@ -98,6 +191,25 @@ def create_app(data_dir=None):
     def check_chapter(chapter):
         if chapter not in chapters: raise HTTPException(404,'章节不存在或尚未开放')
         return chapters[chapter]
+    def require_same_origin(request):
+        if request.headers.get('origin') != base:
+            raise HTTPException(403,'请求来源无效')
+    def analytics_range(days,start,end):
+        today=datetime.now(analytics_timezone).date()
+        if start or end:
+            if not start or not end: raise HTTPException(422,'请选择完整的开始和结束日期')
+            try:
+                first=datetime.strptime(start,'%Y-%m-%d').date()
+                last=datetime.strptime(end,'%Y-%m-%d').date()
+            except ValueError:
+                raise HTTPException(422,'日期格式无效')
+        else:
+            last=today;first=today-timedelta(days=days-1)
+        span=(last-first).days+1
+        if first>last or last>today: raise HTTPException(422,'日期范围无效')
+        if span>90: raise HTTPException(422,'一次最多查询 90 天')
+        if first<today-timedelta(days=179): raise HTTPException(422,'只能查询最近 180 天的数据')
+        return today,first,last,span
 
     @app.middleware('http')
     async def response_headers(request, call_next):
@@ -112,6 +224,57 @@ def create_app(data_dir=None):
     def session(request: Request):
         request.session.setdefault('csrf',secrets.token_urlsafe(32))
         return {'user':public_user(user(request)), 'csrf':request.session['csrf'], 'loginEnabled':enabled}
+
+    @app.post('/api/analytics/view',status_code=204)
+    def record_analytics_view(view: AnalyticsView, request: Request):
+        require_same_origin(request)
+        if view.page not in analytics_pages: raise HTTPException(422,'页面不存在')
+        today=datetime.now(analytics_timezone).date()
+        day=today.isoformat()
+        visitor_hash=hmac.new(session_secret.encode(),view.visitor.encode(),hashlib.sha256).hexdigest()
+        def write_view():
+            with analytics_db() as conn:
+                conn.execute('BEGIN IMMEDIATE')
+                conn.execute('INSERT INTO analytics_page_daily(day,page,pv) VALUES (?,?,1) ON CONFLICT(day,page) DO UPDATE SET pv=pv+1',(day,view.page))
+                conn.execute('INSERT OR IGNORE INTO analytics_visitor_daily(day,page,visitor_hash) VALUES (?,?,?)',(day,view.page,visitor_hash))
+                conn.execute('INSERT OR IGNORE INTO analytics_visitor_daily(day,page,visitor_hash) VALUES (?,?,?)',(day,'__site__',visitor_hash))
+                with analytics_lock:
+                    cleanup=analytics_cleanup_day['value']!=day
+                    if cleanup: analytics_cleanup_day['value']=day
+                if cleanup:
+                    cutoff=(today-timedelta(days=179)).isoformat()
+                    conn.execute('DELETE FROM analytics_visitor_daily WHERE day<?',(cutoff,))
+        use_analytics_database(write_view)
+        return Response(status_code=204)
+
+    @app.get('/api/analytics/summary')
+    def analytics_summary(days: int = Query(7,ge=1,le=90), start: str = '', end: str = ''):
+        today,first,last,span=analytics_range(days,start,end)
+        first_text,last_text=first.isoformat(),last.isoformat()
+        previous_last=first-timedelta(days=1);previous_first=previous_last-timedelta(days=span-1)
+        retention_start=today-timedelta(days=179)
+        def totals(conn,range_start,range_end):
+            bounds=(range_start.isoformat(),range_end.isoformat())
+            pv=conn.execute('SELECT COALESCE(SUM(pv),0) total FROM analytics_page_daily WHERE day BETWEEN ? AND ?',bounds).fetchone()['total']
+            uv=conn.execute('SELECT COUNT(DISTINCT visitor_hash) total FROM analytics_visitor_daily WHERE page=? AND day BETWEEN ? AND ?',('__site__',*bounds)).fetchone()['total']
+            return {'pv':pv,'uv':uv}
+        def read_summary():
+            with analytics_db() as conn:
+                selected=totals(conn,first,last)
+                today_totals=totals(conn,today,today)
+                previous=totals(conn,previous_first,previous_last) if previous_first>=retention_start else None
+                pv_rows={row['day']:row['total'] for row in conn.execute('SELECT day,SUM(pv) total FROM analytics_page_daily WHERE day BETWEEN ? AND ? GROUP BY day',(first_text,last_text))}
+                uv_rows={row['day']:row['total'] for row in conn.execute('SELECT day,COUNT(DISTINCT visitor_hash) total FROM analytics_visitor_daily WHERE page=? AND day BETWEEN ? AND ? GROUP BY day',('__site__',first_text,last_text))}
+                page_pv={row['page']:row['total'] for row in conn.execute('SELECT page,SUM(pv) total FROM analytics_page_daily WHERE day BETWEEN ? AND ? GROUP BY page ORDER BY total DESC',(first_text,last_text))}
+                page_uv={row['page']:row['total'] for row in conn.execute('SELECT page,COUNT(DISTINCT visitor_hash) total FROM analytics_visitor_daily WHERE page!=? AND day BETWEEN ? AND ? GROUP BY page',('__site__',first_text,last_text))}
+            return selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv
+        selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv=use_analytics_database(read_summary)
+        daily=[]
+        cursor=first
+        while cursor<=last:
+            value=cursor.isoformat();daily.append({'day':value,'pv':pv_rows.get(value,0),'uv':uv_rows.get(value,0)});cursor+=timedelta(days=1)
+        pages=[{'page':page,'title':analytics_titles.get(page,page),'pv':pv,'uv':page_uv.get(page,0),'share':round(pv*100/selected['pv'],1) if selected['pv'] else 0} for page,pv in page_pv.items()]
+        return {'range':{'start':first_text,'end':last_text,'days':span,'timezone':'Asia/Shanghai'},'today':today_totals,'totals':selected,'previous':previous,'daily':daily,'pages':pages,'updatedAt':datetime.now(analytics_timezone).isoformat(timespec='seconds')}
 
     @app.get('/auth/login')
     async def login(request: Request, return_to: str = '#home'):
@@ -227,6 +390,8 @@ def create_app(data_dir=None):
 
     @app.get('/')
     def index(): return FileResponse(ROOT/'index.html',headers={'Cache-Control':'no-cache'})
+    @app.get('/analytics')
+    def analytics_page(): return FileResponse(ROOT/'assets/analytics.html',headers={'Cache-Control':'no-store'})
     @app.get('/favicon.svg')
     def favicon(): return FileResponse(ROOT/'favicon.svg')
     @app.get('/deployment.json')
@@ -241,6 +406,7 @@ def create_app(data_dir=None):
             return document
         app.add_api_route('/'+filename,make_document(ROOT/filename),methods=['GET'])
     app.state.db=db
+    app.state.analytics_db=analytics_db
     app.state.oauth=oauth
     return app
 

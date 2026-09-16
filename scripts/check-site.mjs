@@ -44,7 +44,7 @@ checkLinks(read('index.html'));
 assert(!/feishu\.cn/.test(read('index.html')),'Source UI must point to GitHub');
 assert(!/art:'plane'|paper\/plane\.webp/.test(read('assets/paper.js')+read('index.html')));
 checkLinks(read('README.md'));checkLinks(read('README.zh-CN.md'));
-for(const css of ['assets/styles.css','assets/paper.css','assets/review.css']){
+for(const css of ['assets/styles.css','assets/paper.css','assets/review.css','assets/reader-tools.css']){
   for(const m of read(css).matchAll(/url\(['"]?([^)'"\s]+)['"]?\)/g)){
     if(!/^(?:https?:|data:)/.test(m[1]))assert(existsSync(resolve(root,dirname(css),m[1].split('?')[0])),m[1]);
   }

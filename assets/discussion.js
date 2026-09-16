@@ -64,7 +64,7 @@
     if(!session.user) formHint.append(' ',session.loginEnabled?loginLink('登录后参与讨论'):el('span','登录开放后即可参与讨论。'));
   }
   async function refreshSession(){try{session=await api('/api/session');renderAccount();}catch(e){status.textContent=e.message;renderAccount();}}
-  function chapterKey(){return location.hash.slice(1).split('/')[0];}
+  function chapterKey(){return location.hash.slice(1).split('?')[0].split('/')[0];}
   function collectBlocks(){
     blocks=[...$('#articleBody').querySelectorAll('p,li,h2,h3,h4,blockquote,td')].filter(n=>!n.closest('pre,.katex')&&!n.querySelector('p,li,h2,h3,h4,blockquote,td'));
   }

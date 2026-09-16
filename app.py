@@ -111,7 +111,7 @@ def create_app(data_dir=None):
         if not enabled: raise HTTPException(503,'魔搭登录尚未配置')
         # Only a local chapter/home hash can be used as the return destination.
         import re
-        request.session['return_to'] = return_to if re.fullmatch(r'#[a-zA-Z0-9_/-]{1,180}', return_to) else '#home'
+        request.session['return_to'] = return_to if re.fullmatch(r'#[a-zA-Z0-9_/?=&%-]{1,180}', return_to) else '#home'
         return await oauth.modelscope.authorize_redirect(request, base+'/auth/callback')
 
     @app.get('/auth/callback')

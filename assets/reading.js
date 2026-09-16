@@ -31,16 +31,8 @@
     location.hash = 'contents';
     requestAnimationFrame(() => $('#chapterSearch').focus());
   });
-  function search() {
-    location.hash = 'contents';
-    requestAnimationFrame(() => $('#chapterSearch').focus());
-  }
+  function search() { $('#readerSearchButton').click(); }
   document.querySelectorAll('[data-reader-search]').forEach(button => button.addEventListener('click', search));
-  document.addEventListener('keydown', event => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-      event.preventDefault(); search();
-    }
-  });
   const size = [17, 19, 21].includes(Number(preferences.size)) ? Number(preferences.size) : 19;
   $('#readingSize').value = String(size);
   document.documentElement.style.setProperty('--reading-size', size + 'px');
@@ -61,7 +53,7 @@
   });
   function savePosition() {
     if (document.body.dataset.view !== 'reader') return;
-    const chapter = chapters.get(location.hash.slice(1).split('/')[0]);
+    const chapter = chapters.get(location.hash.slice(1).split('?')[0].split('/')[0]);
     if (!chapter || chapter.status === 'pending') return;
     let heading = '';
     chapter.headings.forEach(item => {

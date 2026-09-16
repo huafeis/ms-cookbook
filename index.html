@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="assets/styles.css">
   <link rel="stylesheet" href="assets/paper.css">
   <link rel="stylesheet" href="assets/review.css">
+  <link rel="stylesheet" href="assets/reader-tools.css">
   <link rel="stylesheet" href="assets/reading.css">
   <link rel="stylesheet" href="assets/brand/brand.css">
   <link rel="stylesheet" href="assets/contributors/wall.css">
@@ -21,6 +22,11 @@
 <div class="reading-progress" aria-hidden="true"><span id="readingProgress"></span></div>
 <header class="app-header">
   <a class="wordmark" href="#home"><img class="brand-icon" src="assets/brand/book-mark.svg" alt="" width="30" height="30">魔搭紫皮书</a>
+  <div class="reader-header-tools">
+    <button class="reader-search-trigger" id="readerSearchButton" aria-haspopup="dialog" aria-controls="bookSearchDialog"><img src="assets/paper/search.svg" alt=""><span>搜索全书内容</span><kbd id="searchShortcut" aria-hidden="true">⌘ K</kbd></button>
+    <button class="reader-toc-trigger" id="readerTocButton" aria-haspopup="dialog" aria-controls="tocDialog">本章目录</button>
+    <a class="reader-overview" href="#contents">探索全书 <span aria-hidden="true">↗</span></a>
+  </div>
   <nav class="desktop-nav" aria-label="主导航"><a href="#contents" data-route="contents">全书目录</a><a href="#paths" data-route="paths">阅读路径</a><a href="#practice" data-route="practice">场景实践</a><a href="#contribute" data-route="contribute">社区共建</a><a href="https://github.com/modelscope/ms-cookbook" target="_blank" rel="noopener noreferrer" aria-label="GitHub 项目仓库（新窗口）">GitHub ↗</a><a class="outline-button" id="headerAction" href="#chapter-1">开始阅读</a></nav>
   <button class="mobile-menu" id="menuButton" aria-label="打开目录" aria-haspopup="dialog"><img src="assets/paper/menu.svg" alt="">目录</button>
 </header>
@@ -84,12 +90,20 @@
   </div><footer class="quiet-footer">魔搭紫皮书 · 开源模型实践</footer>
 </main>
 <div class="site-shell" data-page="reader" hidden>
-  <aside class="book-sidebar" aria-label="全书目录"><h2>全书目录</h2><button class="reader-search" data-reader-search>搜索全书 <span>⌘ / Ctrl K</span></button><nav class="chapter-nav" id="chapterNav"></nav></aside>
-  <main class="reader"><article class="article" id="article"><div class="reading-tools" role="group" aria-label="阅读设置"><button data-reader-search aria-label="搜索全书">搜索</button><label for="readingSize">字号</label><select id="readingSize" aria-label="正文字号"><option value="17">小</option><option value="19" selected>标准</option><option value="21">大</option></select><button id="focusReading" aria-pressed="false">专注阅读</button><span id="readingPercent" aria-label="本章阅读进度">0%</span></div><header class="chapter-header"><p class="chapter-kicker" id="partLabel"></p><h1 id="chapterTitle"></h1><p class="chapter-meta"><span id="chapterNumber"></span><span id="readTime"></span><a id="chapterSource" target="_blank" rel="noopener noreferrer">GitHub 原文 ↗</a><a id="chapterEdit" target="_blank" rel="noopener noreferrer">参与改进 ↗</a></p><img class="chapter-art" src="assets/reading-dada-illustrations/01-reading-v2.png" alt="浅紫搭搭翻书阅读"></header><div class="article-body" id="articleBody"></div><nav class="chapter-pager" aria-label="章节翻页"><a id="previousChapter" class="pager-link previous"><small>上一章</small><span></span></a><a id="nextChapter" class="pager-link next"><small>下一章</small><span></span></a></nav><div class="reader-community"><a href="#contribute">加入社区 · 参与共建 ↗</a></div></article><aside class="local-toc" aria-label="本章目录"><h2>本章目录</h2><nav id="localToc"></nav><a class="back-top" href="#" id="backTop">返回顶部 ↑</a></aside></main>
+  <aside class="book-sidebar" id="bookSidebar" aria-labelledby="bookSidebarTitle"><div class="book-sidebar-heading"><h2 id="bookSidebarTitle">全书目录</h2><button class="sidebar-toggle" id="collapseSidebar" aria-label="收起全书目录" aria-controls="bookSidebar" aria-expanded="true" title="收起全书目录"><img src="assets/home/chevron.svg" alt=""></button></div><nav class="chapter-nav" id="chapterNav"></nav></aside>
+  <button class="sidebar-restore" id="expandSidebar" aria-label="展开全书目录" aria-controls="bookSidebar" aria-expanded="false" title="展开全书目录" hidden><img src="assets/home/chevron.svg" alt=""><span>全书目录</span></button>
+  <main class="reader"><article class="article" id="article"><nav class="path-reader-nav" data-path-reader aria-label="阅读路径导航" hidden></nav><div class="reading-tools" role="group" aria-label="阅读设置"><button data-reader-search aria-label="搜索全书">搜索</button><label for="readingSize">字号</label><select id="readingSize" aria-label="正文字号"><option value="17">小</option><option value="19" selected>标准</option><option value="21">大</option></select><button id="focusReading" aria-pressed="false">专注阅读</button><span id="readingPercent" aria-label="本章阅读进度">0%</span></div><header class="chapter-header"><p class="chapter-kicker" id="partLabel"></p><h1 id="chapterTitle"></h1><p class="chapter-meta"><span id="chapterNumber"></span><span id="readTime"></span><a id="chapterSource" target="_blank" rel="noopener noreferrer">GitHub 原文 ↗</a><a id="chapterEdit" target="_blank" rel="noopener noreferrer">参与改进 ↗</a></p><img class="chapter-art" src="assets/reading-dada-illustrations/01-reading-v2.png" alt="浅紫搭搭翻书阅读"></header><div class="article-body" id="articleBody"></div><nav class="path-reader-nav path-reader-bottom" data-path-reader aria-label="继续沿路径阅读" hidden></nav><nav class="chapter-pager" aria-label="章节翻页"><a id="previousChapter" class="pager-link previous"><small>上一章</small><span></span></a><a id="nextChapter" class="pager-link next"><small>下一章</small><span></span></a></nav><div class="reader-community"><a href="#contribute">加入社区 · 参与共建 ↗</a></div></article><aside class="local-toc" aria-label="本章目录"><h2>本章目录</h2><nav id="localToc"></nav><a class="back-top" href="#" id="backTop">返回顶部 ↑</a></aside></main>
   <nav class="mobile-reader-bar" aria-label="阅读操作"><a id="mobilePrevious">上一章</a><button id="tocButton" aria-haspopup="dialog">本章目录</button><a id="mobileNext">下一章 <img src="assets/home/arrow.svg" alt=""></a></nav>
 </div>
+<dialog id="bookSearchDialog" class="book-search-dialog" aria-labelledby="bookSearchTitle">
+  <div class="dialog-heading"><div><h2 id="bookSearchTitle">搜索全书</h2><p>查找章节、知识点或代码关键词</p></div><button class="icon-button" data-close="bookSearchDialog" aria-label="关闭全书搜索"><img src="assets/paper/close.svg" alt=""></button></div>
+  <label class="book-search-input"><img src="assets/paper/search.svg" alt=""><span class="sr-only">搜索全书内容</span><input id="bookSearchInput" type="search" placeholder="试试 LoRA、RAG、准备训练数据…" autocomplete="off" maxlength="120" autofocus aria-describedby="bookSearchStatus"></label>
+  <p id="bookSearchStatus" class="book-search-status" role="status" aria-live="polite"></p>
+  <div id="bookSearchResults" class="book-search-results"></div>
+  <div class="book-search-footer"><span>搜索范围：全书标题与正文</span><span><kbd>↑</kbd> <kbd>↓</kbd> 选择 · <kbd>Enter</kbd> 跳转 · <kbd>Esc</kbd> 关闭</span></div>
+</dialog>
 <dialog id="siteMenu" class="menu-dialog" aria-label="网站与章节导航"><div class="dialog-heading"><a class="wordmark" href="#home">魔搭紫皮书</a><button class="icon-button" data-close="siteMenu" aria-label="关闭目录"><img src="assets/paper/close.svg" alt=""></button></div><nav class="mobile-page-nav"><a href="#home">首页</a><a href="#contents">全书目录</a><a href="#paths">阅读路径</a><a href="#practice">场景实践</a><a href="#contribute">社区共建</a><a href="https://github.com/modelscope/ms-cookbook" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://modelscope.cn/spotlight" target="_blank" rel="noopener noreferrer">魔搭开发者实践 ↗</a></nav><nav class="chapter-nav" id="mobileChapterNav" aria-label="章节目录"></nav></dialog>
 <dialog id="tocDialog" class="toc-dialog" aria-labelledby="tocTitle"><div class="dialog-heading"><h2 id="tocTitle">本章目录</h2><button class="icon-button" data-close="tocDialog" aria-label="关闭本章目录"><img src="assets/paper/close.svg" alt=""></button></div><nav id="mobileToc"></nav></dialog>
 <dialog id="imageViewer" class="image-viewer"><button class="icon-button" data-close="imageViewer" aria-label="关闭图片预览"><img src="assets/paper/close.svg" alt=""></button><img id="viewerImage" alt=""></dialog>
-<script src="assets/content.js"></script><script src="assets/katex/katex.min.js"></script><script src="assets/paper.js?v=20260916-footer"></script><script src="assets/reading.js"></script><script src="assets/discussion.js"></script>
+<script src="assets/content.js"></script><script src="assets/katex/katex.min.js"></script><script src="assets/book-search.js"></script><script src="assets/reader-routes.js"></script><script src="assets/paper.js?v=20260916-footer"></script><script src="assets/reading.js"></script><script src="assets/discussion.js"></script>
 </body></html>

@@ -60,7 +60,9 @@ try {
   // Retry interrupted downloads only, leaving authentication failures explicit.
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      run('git', ['-c', 'http.version=HTTP/1.1', 'clone', '--depth', '1', '--no-tags', '--single-branch', '--branch', 'master', `${endpoint}/studios/${studio}.git`, target]);
+      // Fetch root files and tree metadata only. Large application directories
+      // are replaced from GitHub below, so downloading their old blobs is wasteful.
+      run('git', ['-c', 'http.version=HTTP/1.1', 'clone', '--filter=blob:none', '--sparse', '--depth', '1', '--no-tags', '--single-branch', '--branch', 'master', `${endpoint}/studios/${studio}.git`, target]);
       break;
     } catch (error) {
       if (attempt === 3 || !/early EOF|RPC failed|unexpected disconnect|timed out|ETIMEDOUT|Could not resolve host|Failed to connect/i.test(error.message)) throw error;
@@ -100,7 +102,7 @@ try {
   writeFileSync(join(target, 'deployment.json'), JSON.stringify({
     repository: 'https://github.com/modelscope/ms-cookbook', commit,
   }, null, 2) + '\n');
-  run('git', ['add', '--', ...files, 'README.en.md', 'deployment.json'], target);
+  run('git', ['add', '--sparse', '--', ...files, 'README.en.md', 'deployment.json'], target);
   if (run('git', ['diff', '--cached', '--name-only'], target)) {
     run('git', ['commit', '-m', `Sync GitHub ms-cookbook ${commit.slice(0, 12)}`], target);
     run('git', ['push', 'origin', 'HEAD:master'], target);

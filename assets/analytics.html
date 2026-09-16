@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6b48e8">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="assets/brand/book-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/analytics.css?v=b5b6117627bc">
+  <title>访问统计｜魔搭紫皮书</title>
+</head>
+<body>
+  <div class="dashboard" id="dashboardView">
+    <header class="dashboard-header">
+      <a class="analytics-brand" href="/"><img src="assets/brand/book-mark.svg" alt="" width="30" height="30">魔搭紫皮书</a>
+      <a class="quiet-button" href="/">返回紫皮书</a>
+    </header>
+    <main class="dashboard-main">
+      <section class="dashboard-heading">
+        <div><p class="eyebrow">SITE ANALYTICS</p><h1>访问统计</h1><p id="updatedAt">正在加载数据…</p></div>
+        <div class="range-controls" aria-label="统计时间范围">
+          <div class="range-buttons"><button type="button" data-days="1">今天</button><button type="button" data-days="7" class="active">近 7 天</button><button type="button" data-days="30">近 30 天</button></div>
+          <div class="custom-range"><label>开始<input id="rangeStart" type="date"></label><span>至</span><label>结束<input id="rangeEnd" type="date"></label><button type="button" id="applyRange">查询</button></div>
+        </div>
+      </section>
+      <p class="dashboard-status" id="dashboardStatus" role="status"></p>
+
+      <section class="metric-grid" aria-label="访问概况">
+        <article><span>今日 PV</span><strong id="todayPv">—</strong><small>今天的页面浏览次数</small></article>
+        <article><span>今日 UV</span><strong id="todayUv">—</strong><small>今天的匿名访客数</small></article>
+        <article><span id="rangePvLabel">近 7 天 PV</span><strong id="rangePv">—</strong><small id="rangePvCompare">正在计算</small></article>
+        <article><span id="rangeUvLabel">近 7 天 UV</span><strong id="rangeUv">—</strong><small id="rangeUvCompare">正在计算</small></article>
+      </section>
+
+      <section class="panel trend-panel" aria-labelledby="trendTitle">
+        <header><div><h2 id="trendTitle">访问趋势</h2><p id="trendRange"></p></div><div class="legend"><span class="pv-dot">PV</span><span class="uv-dot">UV</span></div></header>
+        <div class="chart-wrap"><svg id="trendChart" viewBox="0 0 800 280" role="img" aria-label="每日 PV 和 UV 趋势"></svg></div>
+      </section>
+
+      <section class="panel pages-panel" aria-labelledby="pagesTitle">
+        <header><div><h2 id="pagesTitle">热门页面</h2><p>按所选时间范围内的 PV 排序</p></div></header>
+        <div class="table-wrap"><table><thead><tr><th>页面</th><th>PV</th><th>UV</th><th>PV 占比</th></tr></thead><tbody id="pagesBody"></tbody></table></div>
+        <p class="empty-pages" id="emptyPages" hidden>所选时间范围内还没有访问数据。</p>
+      </section>
+      <footer>UV 为匿名浏览器标识的估算结果 · 统计时区：Asia/Shanghai</footer>
+    </main>
+  </div>
+  <script src="assets/analytics-dashboard.js?v=b183ff9847e1"></script>
+</body>
+</html>

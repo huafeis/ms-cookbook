@@ -43,6 +43,7 @@ for(const chapter of data.chapters){
 }
 assert.equal(imageCount,data.imageCount);assert.equal(attachmentCount,data.attachmentCount);
 checkLinks(read('index.html'));
+checkLinks(read('assets/analytics.html'));
 assert(!/feishu\.cn/.test(read('index.html')),'Source UI must point to GitHub');
 assert(!/art:'plane'|paper\/plane\.webp/.test(read('assets/paper.js')+read('index.html')));
 checkLinks(read('README.md'));checkLinks(read('README.zh-CN.md'));

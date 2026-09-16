@@ -4,7 +4,7 @@
   const el = (tag, text, cls) => { const n=document.createElement(tag); if(text)n.textContent=text; if(cls)n.className=cls; return n; };
   let session={user:null,csrf:'',loginEnabled:false}, chapter='', blocks=[], items=[], next=null, generation=0, anchor=null, busy=false;
   const account=el('div',null,'reading-account');
-  $('.app-header').insertBefore(account,$('#menuButton'));
+  $('#headerAccountArea').append(account);
   const panel=el('section',null,'chapter-discussion'); panel.id='chapterDiscussion'; panel.setAttribute('aria-label','本章笔记与留言');
   $('#articleBody').after(panel);
   const title=el('h2','一起读这一章');
@@ -58,7 +58,8 @@
       account.append(el('span',session.user.name,'account-name'));
       const logout=el('button','退出');logout.type='button';logout.onclick=async()=>{try{await api('/api/logout',{method:'POST'});await refreshSession();await load();}catch(e){status.textContent=e.message;}};account.append(logout);
     }else if(session.loginEnabled) account.append(loginLink('魔搭登录'));
-    else account.append(el('span','魔搭登录待开启','account-pending'));
+    else {const pending=el('span','魔搭登录','account-pending');pending.title='魔搭登录尚未配置';pending.setAttribute('aria-disabled','true');account.append(pending);}
+    window.dispatchEvent(new CustomEvent('purplebook:session',{detail:session}));
     textarea.disabled=!session.user;submit.disabled=!session.user;
     formHint.replaceChildren(el('span','留言对所有读者可见。'));
     if(!session.user) formHint.append(' ',session.loginEnabled?loginLink('登录后参与讨论'):el('span','登录开放后即可参与讨论。'));

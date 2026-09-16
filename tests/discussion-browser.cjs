@@ -29,6 +29,21 @@ const fs=require('node:fs');const os=require('node:os');const path=require('node
   await page.screenshot({path:path.join(data,'mobile.png')});
   const guest=await browser.newPage();await guest.goto(env.APP_BASE_URL+'/#chapter-1');await guest.getByRole('button',{name:'划线与想法',exact:true}).click();await guest.locator('.discussion-entry').getByText('<img src=x onerror=alert(1)> 这段很有帮助',{exact:true}).waitFor();
   assert.equal(await guest.getByText('仅自己可见',{exact:true}).count(),0);assert.equal(await guest.locator('#chapterMessage').isDisabled(),true);
-  assert.deepEqual(errors,[]);console.log('PASS: browser comment, highlight, annotation, XSS text rendering, reload, chapter isolation, guest privacy, mobile layout');
+  await page.setViewportSize({width:1280,height:900});await page.goto(env.APP_BASE_URL+'/#contribute');
+  await page.locator('#wishText:not([disabled])').waitFor();
+  await page.locator('#wishText').fill('<img src=x onerror=alert(1)> 希望补充 RAG 本地部署教程');
+  await page.getByRole('button',{name:'投下愿望',exact:true}).click();
+  await page.locator('.wish-entry').getByText('<img src=x onerror=alert(1)> 希望补充 RAG 本地部署教程',{exact:true}).waitFor();
+  assert.equal(await page.locator('.wish-entry img').count(),0);
+  await page.reload();await page.locator('.wish-entry').waitFor();
+  await page.locator('#wishPool').scrollIntoViewIfNeeded();await page.screenshot({path:'/tmp/purplebook-wishes-desktop.png'});
+  await guest.goto(env.APP_BASE_URL+'/#contribute');await guest.locator('.wish-entry').waitFor();
+  assert.equal(await guest.locator('#wishText').isDisabled(),true);assert.equal(await guest.locator('.wish-entry button').count(),0);
+  await page.setViewportSize({width:390,height:844});await page.locator('#wishPool').scrollIntoViewIfNeeded();
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'wish pool mobile overflow');
+  await page.screenshot({path:'/tmp/purplebook-wishes-mobile.png'});
+  page.once('dialog',d=>d.accept());await page.locator('.wish-entry button').click();
+  await page.getByText('还没有人许愿。你希望紫皮书补上的第一份实践是什么？',{exact:true}).waitFor();
+  assert.deepEqual(errors,[]);console.log('PASS: browser comment, highlight, annotation, XSS text rendering, reload, chapter isolation, guest privacy, wishes publish/persist/delete/XSS/guest permissions, mobile layout');
  }finally{if(browser)await browser.close();server.kill();fs.rmSync(data,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -96,3 +96,43 @@ def test_pagination_preserves_same_second_entries(site):
     page=c.get(ENDPOINT).json();assert len(page['items'])==100
     second=c.get(ENDPOINT+'?before='+str(page['next'])).json();assert len(second['items'])==5
     assert not {x['id'] for x in page['items']} & {x['id'] for x in second['items']}
+
+
+def test_wishes_auth_visibility_ownership_and_restart(site):
+    guest=TestClient(site[0]);alice=reader(site);bob=reader(site,'bob')
+    assert guest.post('/api/wishes',json={'text':'想学习模型部署'}).status_code==401
+    alice.headers['x-csrf-token']='wrong'
+    assert alice.post('/api/wishes',json={'text':'想学习模型部署'}).status_code==403
+    alice.headers['x-csrf-token']='test-csrf'
+    wid=alice.post('/api/wishes',json={'text':'  想学习模型部署  '}).json()['id']
+    item=guest.get('/api/wishes').json()['items'][0]
+    assert item['text']=='想学习模型部署' and item['name']=='alice'
+    assert not item['canDelete'] and 'user_id' not in item
+    assert alice.get('/api/wishes').json()['items'][0]['canDelete']
+    assert bob.delete('/api/wishes/'+wid).status_code==403
+    assert guest.delete('/api/wishes/'+wid).status_code==401
+    assert TestClient(create_app(site[1])).get('/api/wishes').json()['items'][0]['id']==wid
+    assert guest.get(ENDPOINT).json()['items']==[]
+    assert alice.delete('/api/wishes/'+wid).status_code==200
+    assert guest.get('/api/wishes').json()['items']==[]
+
+
+def test_wishes_validation_rate_limit_and_pagination(site):
+    c=reader(site)
+    for body in [{},{'text':' '},{'text':'字'*2001}]:
+        assert c.post('/api/wishes',json=body).status_code==422
+    for i in range(5):assert c.post('/api/wishes',json={'text':str(i)}).status_code==201
+    assert c.post('/api/wishes',json={'text':'too many'}).status_code==429
+    with site[0].state.db() as db:
+        for i in range(30):db.execute('INSERT INTO wishes VALUES (?,?,?,?)',('wish-'+str(i),'alice','test',10))
+    first=c.get('/api/wishes').json();second=c.get('/api/wishes?before='+str(first['next'])).json()
+    assert len(first['items'])==20 and len(second['items'])==15 and second['next'] is None
+    assert not {i['id'] for i in first['items']} & {i['id'] for i in second['items']}
+
+
+def test_wishes_moderation(site,monkeypatch):
+    monkeypatch.setenv('MODERATOR_SUBS','sub-mod')
+    updated=(create_app(site[1]),site[1]);alice=reader(updated);mod=reader(updated,'mod')
+    wid=alice.post('/api/wishes',json={'text':'愿望'}).json()['id']
+    assert mod.get('/api/wishes').json()['items'][0]['canDelete']
+    assert mod.delete('/api/wishes/'+wid).status_code==200

@@ -25,6 +25,9 @@ class Entry(BaseModel):
     start: int = Field(default=0, ge=0, le=1000000)
     end: int = Field(default=0, ge=0, le=1000000)
 
+class Wish(BaseModel):
+    text: str = Field(max_length=2000)
+
 
 def create_app(data_dir=None):
     folder = Path(data_dir or os.getenv('DATA_DIR', ROOT / '.data'))
@@ -47,6 +50,8 @@ def create_app(data_dir=None):
         CREATE TABLE IF NOT EXISTS entries(id TEXT PRIMARY KEY, chapter TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES users(id), kind TEXT NOT NULL, text TEXT NOT NULL, quote TEXT NOT NULL, block INTEGER NOT NULL, start INTEGER NOT NULL, end INTEGER NOT NULL, created INTEGER NOT NULL);
         CREATE INDEX IF NOT EXISTS entries_chapter ON entries(chapter, created);
         CREATE INDEX IF NOT EXISTS entries_user_time ON entries(user_id, created);
+        CREATE TABLE IF NOT EXISTS wishes(id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), text TEXT NOT NULL, created INTEGER NOT NULL);
+        CREATE INDEX IF NOT EXISTS wishes_user_time ON wishes(user_id, created);
         ''')
     key_path = folder / 'session.key'
     if not key_path.exists():
@@ -181,6 +186,41 @@ def create_app(data_dir=None):
             if not row: raise HTTPException(404,'内容已删除')
             if row['user_id']!=u['id'] and u['sub'] not in admins: raise HTTPException(403,'只能删除自己发表的内容')
             conn.execute('DELETE FROM entries WHERE id=?',(entry_id,))
+        return {'ok':True}
+
+    @app.get('/api/wishes')
+    def list_wishes(request: Request, before: int = 0):
+        u=user(request)
+        with db() as conn:
+            rows=conn.execute('SELECT w.rowid cursor,w.*,u.name FROM wishes w JOIN users u ON u.id=w.user_id WHERE (?=0 OR w.rowid<?) ORDER BY w.rowid DESC LIMIT 21',(before,before)).fetchall()
+        items=[]
+        for row in rows[:20]:
+            item=dict(row)
+            item['canDelete']=bool(u and (item['user_id']==u['id'] or u['sub'] in admins))
+            item.pop('user_id'); items.append(item)
+        return {'items':items,'next':items[-1]['cursor'] if len(rows)>20 else None}
+
+    @app.post('/api/wishes',status_code=201)
+    def add_wish(wish: Wish, request: Request):
+        u=require_user(request)
+        text=wish.text.strip()
+        if not text: raise HTTPException(422,'请写下希望补充的内容')
+        now=int(time.time()); wid=secrets.token_hex(16)
+        with db() as conn:
+            conn.execute('BEGIN IMMEDIATE')
+            count=conn.execute('SELECT count(*) FROM wishes WHERE user_id=? AND created>?',(u['id'],now-60)).fetchone()[0]
+            if count>=5: raise HTTPException(429,'愿望发送太频繁，请稍后再试')
+            conn.execute('INSERT INTO wishes VALUES (?,?,?,?)',(wid,u['id'],text,now))
+        return {'id':wid}
+
+    @app.delete('/api/wishes/{wish_id}')
+    def delete_wish(wish_id: str, request: Request):
+        u=require_user(request)
+        with db() as conn:
+            row=conn.execute('SELECT user_id FROM wishes WHERE id=?',(wish_id,)).fetchone()
+            if not row: raise HTTPException(404,'这条愿望已删除')
+            if row['user_id']!=u['id'] and u['sub'] not in admins: raise HTTPException(403,'只能删除自己发表的愿望')
+            conn.execute('DELETE FROM wishes WHERE id=?',(wish_id,))
         return {'ok':True}
 
     @app.get('/')

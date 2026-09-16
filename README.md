@@ -34,7 +34,7 @@ A useful model application starts with practical decisions: which model fits the
 
 The goal is to help developers move from a first successful inference to applications they can reproduce, evaluate, and improve. Examples cover enterprise knowledge Q&A, speech assistants, customer-service quality analysis, fitness coaching, and product-image creation.
 
-> **8 parts · 31 chapters · 30 available to read**
+> **8 parts · 34 chapters · 33 available to read**
 
 ## Start reading
 
@@ -101,6 +101,7 @@ Read each chapter on GitHub, or use the [online reading website](https://modelsc
 | [17 · 智能客服质检：AI能从一通客服电话中分析出什么？](content/chapters/chapter-17.md) | Call transcription and quality analysis |
 | [18 · 搭建一个能听也能说的语音助手](content/chapters/chapter-18.md) | Speech recognition, Q&A, and synthesis |
 | [19 · 实现一个企业知识问答助手](content/chapters/chapter-19.md) | Knowledge retrieval and RAG |
+| [32 · 场景有千千万，欢迎你来共建出你的场景](content/chapters/chapter-32.md) | Invitation to contribute reproducible application tutorials |
 | **Part 6 · Generative AI** | |
 | [20 · 10个Case，带你看看AIGC的开源模型能做到什么地步](content/chapters/chapter-20.md) | Open generative-model use cases |
 | [21 · 定制？使用DiffSynth训练图像LoRA](content/chapters/chapter-21.md) | Image LoRA customization with DiffSynth |
@@ -108,6 +109,7 @@ Read each chapter on GitHub, or use the [online reading website](https://modelsc
 | [23 · 开源模型也能做出像样的AI视频吗？](content/chapters/chapter-23.md) | MiniMax H3 deployment tutorial pending |
 | [24 · 补充：AIGC理论知识](content/chapters/chapter-24.md) | Image and video generation fundamentals |
 | **Part 7 · Agents** | |
+| [33 · Agent是什么，它能做什么事？](content/chapters/chapter-33.md) | Agent components, execution loop, and use cases |
 | [25 · MCP：让模型连接外部工具](content/chapters/chapter-25.md) | Connecting models to external tools |
 | [26 · Skill：把任务方法封装成能力](content/chapters/chapter-26.md) | Reusable task methods and workflows |
 | [27 · 快速使用Claude code](content/chapters/chapter-27.md) | Getting started with Claude Code |
@@ -116,6 +118,7 @@ Read each chapter on GitHub, or use the [online reading website](https://modelsc
 | [30 · 补充：Agent框架知识](content/chapters/chapter-30.md) | Agent framework fundamentals |
 | **Part 8 · Supplementary fundamentals** | |
 | [31 · 补充：大模型基础知识](content/chapters/chapter-31.md) | Model architecture, training, inference, and limitations |
+| [34 · 主流LLM评测](content/chapters/chapter-34.md) | Invitation to contribute evaluations of mainstream models |
 
 ## Application examples
 

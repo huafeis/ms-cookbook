@@ -1,6 +1,6 @@
 {
   "title": "魔搭紫皮书",
-  "sourceUpdated": "2026-09-15",
+  "sourceUpdated": "2026-09-16",
   "parts": [
     {
       "title": "第一篇　认识开源模型",
@@ -170,6 +170,13 @@
       "status": "ready"
     },
     {
+      "number": 32,
+      "title": "场景有千千万，欢迎你来共建出你的场景",
+      "partIndex": 4,
+      "file": "source-html/chapter-32.html",
+      "status": "ready"
+    },
+    {
       "number": 20,
       "title": "10个Case，带你看看AIGC的开源模型能做到什么地步",
       "partIndex": 5,
@@ -202,6 +209,13 @@
       "title": "补充：AIGC理论知识",
       "partIndex": 5,
       "file": "source-html/chapter-24.html",
+      "status": "ready"
+    },
+    {
+      "number": 33,
+      "title": "Agent是什么，它能做什么事？",
+      "partIndex": 6,
+      "file": "source-html/chapter-33.html",
       "status": "ready"
     },
     {
@@ -251,6 +265,13 @@
       "title": "补充：大模型基础知识",
       "partIndex": 7,
       "file": "source-html/chapter-31.html",
+      "status": "ready"
+    },
+    {
+      "number": 34,
+      "title": "主流LLM评测",
+      "partIndex": 7,
+      "file": "source-html/chapter-34.html",
       "status": "ready"
     }
   ]

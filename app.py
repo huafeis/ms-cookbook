@@ -1,5 +1,5 @@
 """Reading community API and static site; OAuth credentials never leave this process."""
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from datetime import datetime, timedelta
 import hashlib
 import hmac
@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import secrets
+import shutil
 import sqlite3
 import threading
 import time
@@ -28,6 +29,7 @@ ANALYTICS_SCHEMA = '''
 CREATE TABLE IF NOT EXISTS analytics_page_daily(day TEXT NOT NULL, page TEXT NOT NULL, pv INTEGER NOT NULL DEFAULT 0 CHECK(pv >= 0), PRIMARY KEY(day, page));
 CREATE TABLE IF NOT EXISTS analytics_visitor_daily(day TEXT NOT NULL, page TEXT NOT NULL, visitor_hash TEXT NOT NULL, PRIMARY KEY(day, page, visitor_hash));
 CREATE INDEX IF NOT EXISTS analytics_visitors_page_day ON analytics_visitor_daily(page, day);
+CREATE TABLE IF NOT EXISTS analytics_visitor_all_time(visitor_hash TEXT PRIMARY KEY, first_day TEXT NOT NULL);
 '''
 
 class Entry(BaseModel):
@@ -46,11 +48,24 @@ class AnalyticsView(BaseModel):
     visitor: str = Field(min_length=16, max_length=128, pattern=r'^[A-Za-z0-9_-]+$')
 
 
-def create_app(data_dir=None):
+def create_app(data_dir=None, analytics_runtime_dir=None):
     folder = Path(data_dir or os.getenv('DATA_DIR', ROOT / '.data'))
     folder.mkdir(parents=True, exist_ok=True)
     db_path = folder / 'reading.sqlite3'
-    analytics_path = folder / 'analytics.sqlite3'
+    persistent_analytics_path = folder / 'analytics.sqlite3'
+    previous_analytics_path = folder / 'analytics.previous.sqlite3'
+    if analytics_runtime_dir:
+        analytics_runtime = Path(analytics_runtime_dir)
+    elif data_dir is not None:
+        analytics_runtime = folder / '.analytics-runtime'
+    else:
+        analytics_runtime = Path(os.getenv('ANALYTICS_RUNTIME_DIR', '/tmp/purplebook-analytics'))
+    analytics_runtime.mkdir(parents=True, exist_ok=True)
+    analytics_path = analytics_runtime / 'analytics.sqlite3'
+    last_snapshot_path = analytics_runtime / 'analytics.last-snapshot.sqlite3'
+    analytics_snapshot_lock = threading.Lock()
+    analytics_repair_lock = threading.Lock()
+    analytics_snapshot_state = {'generation': 0, 'persisted': 0, 'last': 0.0}
     @contextmanager
     def db():
         conn = sqlite3.connect(db_path, timeout=15)
@@ -86,31 +101,120 @@ def create_app(data_dir=None):
         message = str(error).lower()
         return any(marker in message for marker in ('malformed', 'file is not a database', 'database disk image'))
 
+    def check_analytics_database(path):
+        with sqlite3.connect(path, timeout=5) as conn:
+            result = conn.execute('PRAGMA quick_check').fetchone()[0]
+        if result != 'ok': raise sqlite3.DatabaseError(result)
+
+    def remove_runtime_database():
+        for sidecar in ('', '-wal', '-shm', '-journal'):
+            path = Path(str(analytics_path) + sidecar)
+            if path.exists(): path.unlink()
+
+    def copy_sqlite_database(source, destination):
+        temporary = analytics_runtime / f'.restore-{secrets.token_hex(6)}.sqlite3'
+        try:
+            uri = f'file:{source.resolve()}?mode=ro'
+            with sqlite3.connect(uri, uri=True, timeout=10) as source_db, sqlite3.connect(temporary) as target_db:
+                source_db.backup(target_db)
+            check_analytics_database(temporary)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            temporary.replace(destination)
+        finally:
+            if temporary.exists(): temporary.unlink()
+
+    def quarantine_persistent_database(source, error):
+        suffix = f'{int(time.time())}-{secrets.token_hex(4)}'
+        backup = folder / f'{source.stem}.corrupt-{suffix}.sqlite3'
+        for sidecar in ('', '-wal', '-shm', '-journal'):
+            path = Path(str(source) + sidecar)
+            if path.exists(): path.replace(Path(str(backup) + sidecar))
+        LOGGER.error('Quarantined corrupted analytics snapshot at %s: %s', backup, error)
+
+    def restore_analytics_database():
+        remove_runtime_database()
+        for source in (persistent_analytics_path, previous_analytics_path):
+            if not source.exists(): continue
+            try:
+                copy_sqlite_database(source, analytics_path)
+                LOGGER.info('Restored analytics runtime database from %s', source)
+                return True
+            except sqlite3.DatabaseError as error:
+                if not analytics_corruption(error): raise
+                quarantine_persistent_database(source, error)
+        return False
+
     def initialize_analytics_database():
         with analytics_db() as conn:
             result = conn.execute('PRAGMA quick_check').fetchone()[0]
             if result != 'ok': raise sqlite3.DatabaseError(result)
-            # The Studio workspace is persistent storage shared across deployments.
-            # A rollback journal avoids leaving WAL sidecars across instance changes.
-            conn.execute('PRAGMA journal_mode=DELETE').fetchone()
+            # SQLite runs on the container's local filesystem. Consistent database
+            # snapshots are copied to the Studio's object-backed persistent mount.
+            conn.execute('PRAGMA journal_mode=WAL').fetchone()
             conn.execute('PRAGMA synchronous=FULL')
             conn.executescript(ANALYTICS_SCHEMA)
+            conn.execute('''
+                INSERT OR IGNORE INTO analytics_visitor_all_time(visitor_hash,first_day)
+                SELECT visitor_hash,MIN(day) FROM analytics_visitor_daily
+                WHERE page='__site__' GROUP BY visitor_hash
+            ''')
 
-    def quarantine_analytics_database(error):
+    def quarantine_runtime_database(error):
         suffix = f'{int(time.time())}-{secrets.token_hex(4)}'
         backup = folder / f'analytics.corrupt-{suffix}.sqlite3'
-        for sidecar in ('', '-wal', '-shm', '-journal'):
-            source = Path(str(analytics_path) + sidecar)
-            if source.exists(): source.replace(Path(str(backup) + sidecar))
-        LOGGER.error('Quarantined corrupted analytics database at %s: %s', backup, error)
-        return backup
+        if analytics_path.exists():
+            temporary = folder / f'.analytics-corrupt-{secrets.token_hex(6)}.tmp'
+            shutil.copyfile(analytics_path, temporary)
+            temporary.replace(backup)
+        remove_runtime_database()
+        LOGGER.error('Quarantined corrupted analytics runtime database at %s: %s', backup, error)
 
+    def durable_copy(source, destination):
+        temporary = folder / f'.{destination.name}-{secrets.token_hex(6)}.tmp'
+        try:
+            with source.open('rb') as input_file, temporary.open('wb') as output_file:
+                shutil.copyfileobj(input_file, output_file, 1024 * 1024)
+                output_file.flush()
+                os.fsync(output_file.fileno())
+            temporary.replace(destination)
+        finally:
+            if temporary.exists(): temporary.unlink()
+
+    def snapshot_analytics_database(force=False):
+        with analytics_snapshot_lock:
+            generation = analytics_snapshot_state['generation']
+            if generation == analytics_snapshot_state['persisted'] and persistent_analytics_path.exists(): return False
+            if not force and time.monotonic() - analytics_snapshot_state['last'] < 15: return False
+            snapshot = analytics_runtime / f'.snapshot-{secrets.token_hex(6)}.sqlite3'
+            try:
+                with sqlite3.connect(analytics_path, timeout=5) as source_db, sqlite3.connect(snapshot) as target_db:
+                    source_db.backup(target_db)
+                check_analytics_database(snapshot)
+                if last_snapshot_path.exists(): durable_copy(last_snapshot_path, previous_analytics_path)
+                durable_copy(snapshot, persistent_analytics_path)
+                snapshot.replace(last_snapshot_path)
+                analytics_snapshot_state['persisted'] = generation
+                analytics_snapshot_state['last'] = time.monotonic()
+                return True
+            finally:
+                if snapshot.exists(): snapshot.unlink()
+
+    restored = restore_analytics_database()
     try:
         initialize_analytics_database()
     except sqlite3.DatabaseError as error:
         if not analytics_corruption(error): raise
-        quarantine_analytics_database(error)
+        quarantine_runtime_database(error)
+        restored = restore_analytics_database()
+        if not restored: remove_runtime_database()
         initialize_analytics_database()
+    analytics_snapshot_state['generation'] = 1
+    try:
+        snapshot_analytics_database(force=True)
+        # Persist the first real view immediately after a container starts.
+        analytics_snapshot_state['last'] = 0.0
+    except (OSError, sqlite3.DatabaseError):
+        LOGGER.exception('Could not persist the initial analytics snapshot')
     key_path = folder / 'session.key'
     if not key_path.exists():
         try:
@@ -124,7 +228,16 @@ def create_app(data_dir=None):
     if parsed.scheme != 'https' and parsed.hostname not in ('127.0.0.1', 'localhost'):
         raise RuntimeError('Public OAuth deployments require HTTPS')
     base = base.rstrip('/')
-    app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+    @asynccontextmanager
+    async def lifespan(_app):
+        yield
+        try:
+            snapshot_analytics_database(force=True)
+        except (OSError, sqlite3.DatabaseError):
+            LOGGER.exception('Could not persist analytics during shutdown')
+
+    app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
     session_secret = os.getenv('SESSION_SECRET') or key_path.read_text()
     app.add_middleware(SessionMiddleware, secret_key=session_secret, session_cookie='purplebook_session', max_age=7*86400, same_site='lax', https_only=parsed.scheme=='https')
     oauth = OAuth()
@@ -144,22 +257,24 @@ def create_app(data_dir=None):
     analytics_titles.update({c['id']:c['title'] for c in book_data['chapters']})
     analytics_timezone = ZoneInfo('Asia/Shanghai')
     analytics_lock = threading.Lock()
-    analytics_repair_lock = threading.Lock()
     analytics_cleanup_day = {'value': ''}
 
     def repair_analytics_database(original_error):
         if not analytics_corruption(original_error): raise original_error
         with analytics_repair_lock:
             try:
-                with analytics_db() as conn:
-                    result = conn.execute('PRAGMA quick_check').fetchone()[0]
-                    if result == 'ok': return
-                    current_error = sqlite3.DatabaseError(result)
+                check_analytics_database(analytics_path)
+                return
             except sqlite3.DatabaseError as error:
                 if not analytics_corruption(error): raise
                 current_error = error
-            quarantine_analytics_database(current_error)
+            quarantine_runtime_database(current_error)
+            restored = restore_analytics_database()
+            if not restored: remove_runtime_database()
             initialize_analytics_database()
+            with analytics_snapshot_lock:
+                analytics_snapshot_state['generation'] += 1
+            snapshot_analytics_database(force=True)
 
     def use_analytics_database(operation):
         try:
@@ -172,6 +287,14 @@ def create_app(data_dir=None):
                 return operation()
             except sqlite3.DatabaseError as retry_error:
                 raise HTTPException(503, '统计服务暂时不可用，请稍后重试') from retry_error
+
+    def mark_analytics_dirty():
+        with analytics_snapshot_lock:
+            analytics_snapshot_state['generation'] += 1
+        try:
+            snapshot_analytics_database()
+        except (OSError, sqlite3.DatabaseError):
+            LOGGER.exception('Could not persist the analytics snapshot; a later view will retry')
 
     def user(request):
         sid = request.session.get('sid')
@@ -238,6 +361,7 @@ def create_app(data_dir=None):
                 conn.execute('INSERT INTO analytics_page_daily(day,page,pv) VALUES (?,?,1) ON CONFLICT(day,page) DO UPDATE SET pv=pv+1',(day,view.page))
                 conn.execute('INSERT OR IGNORE INTO analytics_visitor_daily(day,page,visitor_hash) VALUES (?,?,?)',(day,view.page,visitor_hash))
                 conn.execute('INSERT OR IGNORE INTO analytics_visitor_daily(day,page,visitor_hash) VALUES (?,?,?)',(day,'__site__',visitor_hash))
+                conn.execute('INSERT OR IGNORE INTO analytics_visitor_all_time(visitor_hash,first_day) VALUES (?,?)',(visitor_hash,day))
                 with analytics_lock:
                     cleanup=analytics_cleanup_day['value']!=day
                     if cleanup: analytics_cleanup_day['value']=day
@@ -245,6 +369,7 @@ def create_app(data_dir=None):
                     cutoff=(today-timedelta(days=179)).isoformat()
                     conn.execute('DELETE FROM analytics_visitor_daily WHERE day<?',(cutoff,))
         use_analytics_database(write_view)
+        mark_analytics_dirty()
         return Response(status_code=204)
 
     @app.get('/api/analytics/summary')
@@ -267,14 +392,17 @@ def create_app(data_dir=None):
                 uv_rows={row['day']:row['total'] for row in conn.execute('SELECT day,COUNT(DISTINCT visitor_hash) total FROM analytics_visitor_daily WHERE page=? AND day BETWEEN ? AND ? GROUP BY day',('__site__',first_text,last_text))}
                 page_pv={row['page']:row['total'] for row in conn.execute('SELECT page,SUM(pv) total FROM analytics_page_daily WHERE day BETWEEN ? AND ? GROUP BY page ORDER BY total DESC',(first_text,last_text))}
                 page_uv={row['page']:row['total'] for row in conn.execute('SELECT page,COUNT(DISTINCT visitor_hash) total FROM analytics_visitor_daily WHERE page!=? AND day BETWEEN ? AND ? GROUP BY page',('__site__',first_text,last_text))}
-            return selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv
-        selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv=use_analytics_database(read_summary)
+                lifetime_pv=conn.execute('SELECT COALESCE(SUM(pv),0) total FROM analytics_page_daily').fetchone()['total']
+                lifetime_uv=conn.execute('SELECT COUNT(*) total FROM analytics_visitor_all_time').fetchone()['total']
+                lifetime_since=conn.execute('SELECT MIN(day) first_day FROM analytics_page_daily').fetchone()['first_day']
+            return selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv,{'pv':lifetime_pv,'uv':lifetime_uv,'since':lifetime_since}
+        selected,today_totals,previous,pv_rows,uv_rows,page_pv,page_uv,lifetime=use_analytics_database(read_summary)
         daily=[]
         cursor=first
         while cursor<=last:
             value=cursor.isoformat();daily.append({'day':value,'pv':pv_rows.get(value,0),'uv':uv_rows.get(value,0)});cursor+=timedelta(days=1)
         pages=[{'page':page,'title':analytics_titles.get(page,page),'pv':pv,'uv':page_uv.get(page,0),'share':round(pv*100/selected['pv'],1) if selected['pv'] else 0} for page,pv in page_pv.items()]
-        return {'range':{'start':first_text,'end':last_text,'days':span,'timezone':'Asia/Shanghai'},'today':today_totals,'totals':selected,'previous':previous,'daily':daily,'pages':pages,'updatedAt':datetime.now(analytics_timezone).isoformat(timespec='seconds')}
+        return {'range':{'start':first_text,'end':last_text,'days':span,'timezone':'Asia/Shanghai'},'lifetime':lifetime,'today':today_totals,'totals':selected,'previous':previous,'daily':daily,'pages':pages,'updatedAt':datetime.now(analytics_timezone).isoformat(timespec='seconds')}
 
     @app.get('/auth/login')
     async def login(request: Request, return_to: str = '#home'):
@@ -405,8 +533,12 @@ def create_app(data_dir=None):
             def document(): return FileResponse(path)
             return document
         app.add_api_route('/'+filename,make_document(ROOT/filename),methods=['GET'])
+
     app.state.db=db
     app.state.analytics_db=analytics_db
+    app.state.analytics_path=analytics_path
+    app.state.persistent_analytics_path=persistent_analytics_path
+    app.state.snapshot_analytics=snapshot_analytics_database
     app.state.oauth=oauth
     return app
 

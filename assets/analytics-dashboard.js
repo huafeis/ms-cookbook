@@ -86,6 +86,10 @@
 
   function render(data) {
     const label=rangeLabel(data);
+    const since=data.lifetime.since?data.lifetime.since.replaceAll('-','/'):'统计启用日';
+    $('#lifetimePv').textContent=number.format(data.lifetime.pv);$('#lifetimeUv').textContent=number.format(data.lifetime.uv);
+    $('#lifetimePvSince').textContent=`自 ${since} 起累计`;
+    $('#lifetimeUvSince').textContent=`自 ${since} 起累计`;
     $('#todayPv').textContent=number.format(data.today.pv);$('#todayUv').textContent=number.format(data.today.uv);
     $('#rangePvLabel').textContent=label+' PV';$('#rangeUvLabel').textContent=label+' UV';
     $('#rangePv').textContent=number.format(data.totals.pv);$('#rangeUv').textContent=number.format(data.totals.uv);

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pytest
@@ -30,6 +31,7 @@ def test_tracking_daily_pv_uv_and_summary(analytics_site):
     summary=client.get('/api/analytics/summary?days=7').json()
     assert summary['today']=={'pv':4,'uv':2}
     assert summary['totals']=={'pv':4,'uv':2}
+    assert summary['lifetime']=={'pv':4,'uv':2,'since':datetime.now(ZoneInfo('Asia/Shanghai')).date().isoformat()}
     assert summary['range']['timezone']=='Asia/Shanghai'
     pages={item['page']:item for item in summary['pages']}
     assert pages['home']['pv']==3 and pages['home']['uv']==2 and pages['home']['share']==75.0
@@ -79,14 +81,64 @@ def test_analytics_uses_an_isolated_database(analytics_site):
     with app.state.analytics_db() as db:
         tables={row['name'] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         journal=db.execute('PRAGMA journal_mode').fetchone()[0]
-    assert {'analytics_page_daily','analytics_visitor_daily'} <= tables
-    assert journal=='delete'
+    assert {'analytics_page_daily','analytics_visitor_daily','analytics_visitor_all_time'} <= tables
+    assert journal=='wal'
+    assert app.state.analytics_path != app.state.persistent_analytics_path
+    assert app.state.persistent_analytics_path.exists()
 
 
 def test_corrupted_analytics_database_is_quarantined_and_rebuilt(analytics_site,tmp_path):
-    _,client=analytics_site
-    (tmp_path/'analytics.sqlite3').write_bytes(b'corrupted analytics database')
-    response=client.post('/api/analytics/view',json={'page':'home','visitor':'visitor_aaaaaaaaaaaaaaaa'})
+    app,client=analytics_site
+    body={'page':'home','visitor':'visitor_aaaaaaaaaaaaaaaa'}
+    assert client.post('/api/analytics/view',json=body).status_code==204
+    app.state.snapshot_analytics(force=True)
+    for suffix in ('','-wal','-shm'):
+        path=Path(str(app.state.analytics_path)+suffix)
+        if path.exists(): path.unlink()
+    app.state.analytics_path.write_bytes(b'corrupted analytics database')
+    response=client.post('/api/analytics/view',json=body)
     assert response.status_code==204
-    assert client.get('/api/analytics/summary?days=1').json()['today']=={'pv':1,'uv':1}
+    summary=client.get('/api/analytics/summary?days=1').json()
+    assert summary['today']=={'pv':2,'uv':1}
+    assert summary['lifetime']['pv']==2
+    assert len(list(tmp_path.glob('analytics.corrupt-*.sqlite3')))==1
+
+
+def test_analytics_snapshot_survives_a_new_runtime(tmp_path,monkeypatch):
+    monkeypatch.setenv('APP_BASE_URL',BASE)
+    monkeypatch.delenv('OAUTH_CLIENT_ID',raising=False)
+    monkeypatch.delenv('OAUTH_CLIENT_SECRET',raising=False)
+    first=create_app(tmp_path,tmp_path/'runtime-one')
+    first_client=TestClient(first,base_url=BASE,headers={'origin':BASE})
+    for visitor in ('visitor_aaaaaaaaaaaaaaaa','visitor_bbbbbbbbbbbbbbbb'):
+        assert first_client.post('/api/analytics/view',json={'page':'home','visitor':visitor}).status_code==204
+    first.state.snapshot_analytics(force=True)
+
+    second=create_app(tmp_path,tmp_path/'runtime-two')
+    second_client=TestClient(second,base_url=BASE,headers={'origin':BASE})
+    summary=second_client.get('/api/analytics/summary?days=7').json()
+    assert summary['today']=={'pv':2,'uv':2}
+    assert summary['lifetime']['pv']==2
+    assert summary['lifetime']['uv']==2
+
+
+def test_corrupted_current_snapshot_falls_back_to_previous(tmp_path,monkeypatch):
+    monkeypatch.setenv('APP_BASE_URL',BASE)
+    monkeypatch.delenv('OAUTH_CLIENT_ID',raising=False)
+    monkeypatch.delenv('OAUTH_CLIENT_SECRET',raising=False)
+    first=create_app(tmp_path,tmp_path/'runtime-one')
+    first_client=TestClient(first,base_url=BASE,headers={'origin':BASE})
+    body={'page':'home','visitor':'visitor_aaaaaaaaaaaaaaaa'}
+    assert first_client.post('/api/analytics/view',json=body).status_code==204
+    assert first_client.post('/api/analytics/view',json=body).status_code==204
+    assert first.state.snapshot_analytics(force=True)
+    assert (tmp_path/'analytics.previous.sqlite3').exists()
+    (tmp_path/'analytics.sqlite3').write_bytes(b'corrupted current snapshot')
+
+    second=create_app(tmp_path,tmp_path/'runtime-two')
+    second_client=TestClient(second,base_url=BASE,headers={'origin':BASE})
+    summary=second_client.get('/api/analytics/summary?days=7').json()
+    assert summary['today']=={'pv':1,'uv':1}
+    assert summary['lifetime']['pv']==1
+    assert summary['lifetime']['uv']==1
     assert len(list(tmp_path.glob('analytics.corrupt-*.sqlite3')))==1

@@ -110,7 +110,7 @@ r \ll \min(d,k)
 <img src="../../assets/manuscript-20260914/c13-7f4ed7665ab43d.webp" alt="正文配图" class="article-image" loading="lazy" decoding="async" />
 <p />
 <h3>加载微调后的模型，试试实际效果</h3>
-<p>合并完成后，可以直接加载生成的完整模型进行推理。为了方便应用程序调用，也可以将模型启动为 OpenAI 兼容接口，通过 API 的方式访问微调后的模型，这个也是一个常驻服务，需要在终端中启动，可以参考第七章怎么在终端中启动命令，启动命令如下：</p>
+<p>合并完成后，可以直接加载生成的完整模型进行推理。为了方便应用程序调用，也可以将模型启动为 OpenAI 兼容接口，通过 API 的方式访问微调后的模型。由于 <code>swift deploy</code> 启动的是一个持续运行的常驻服务，不会执行完就退出，如果直接在 Notebook 单元格里前台运行，它会一直占用内核，导致后续的请求测试单元格无法执行。因此需要在终端中启动，让服务在后台持续运行，同时在 Notebook 里发送请求。在魔搭 Notebook 中，终端位于 WebIDE 的面板（Panel）里，可以通过右上角的面板图标或 <code>Ctrl+J</code> 快捷键唤起。启动命令如下：</p>
 <pre data-language="Plain Text"><code>CUDA_VISIBLE_DEVICES=0 swift deploy \
   --model output/qwen3_0_6b_ner_merged \
   --load_args false \
